@@ -1,38 +1,118 @@
 /* Global Styles */
 
+:root {
+  /* Deep Navy / Slate Palette */
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  /* Indigo to Violet */
+  --site-bg: #0f172a;
+  /* Slate 900 */
+  --card-bg: rgba(30, 41, 59, 0.7);
+  /* Slate 800 with opacity */
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --text-main: #f8fafc;
+  /* Slate 50 */
+  --text-muted: #94a3b8;
+  /* Slate 400 */
+  --border-color: rgba(255, 255, 255, 0.1);
+  --focus-glow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background: #0f0f23;
-  color: #e2e8f0;
+  background: var(--site-bg);
+  color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
-/* PrimeNG dark mode overrides */
-.dark-mode {
-  --p-surface-0: #0f0f23;
-  --p-surface-50: #1a1a2e;
-  --p-surface-100: #16213e;
-  --p-surface-200: #1e3a5f;
-  --p-surface-300: #2a4a6e;
-  --p-surface-400: #3a5a7e;
-  --p-surface-500: #4a6a8e;
-  --p-surface-600: #5a7a9e;
-  --p-surface-700: #7a9abe;
-  --p-surface-800: #a0bace;
-  --p-surface-900: #c0dade;
-  
-  --p-primary-color: #667eea;
-  --p-primary-contrast-color: #ffffff;
-  
-  --p-text-color: #e2e8f0;
-  --p-text-muted-color: #a0aec0;
+/* Background Mesh Gradient Effect (Optional subtle background) */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background:
+    radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* PrimeNG Dark Mode & Component Overrides */
+.p-component {
+  font-family: inherit;
+}
+
+/* Inputs */
+.p-inputtext {
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:enabled:focus {
+    box-shadow: var(--focus-glow);
+    border-color: #8b5cf6;
+  }
+
+  &:enabled:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Password Input Wrapper Fix */
+.p-password {
+  width: 100%;
+}
+
+.p-password-input {
+  width: 100%;
+}
+
+/* Buttons */
+.p-button {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:not(.p-button-outlined):not(.p-button-text):not(.p-button-link) {
+    background: var(--primary-gradient);
+    border: none;
+
+    &:hover {
+      background: linear-gradient(135deg, #5b5ee0 0%, #7c4df0 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Cards (Glassmorphism default) */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
 }
 
 /* Scrollbar styling */
@@ -42,22 +122,16 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a2e;
+  background: #0f172a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3a3a5e;
+  background: #334155;
   border-radius: 4px;
-  
-  &:hover {
-    background: #4a4a6e;
-  }
-}
 
-/* Link styling */
-a {
-  color: inherit;
-  text-decoration: none;
+  &:hover {
+    background: #475569;
+  }
 }
 
 /* Utility classes */
@@ -65,17 +139,20 @@ a {
   width: 100%;
 }
 
-/* PrimeNG component overrides */
-.p-button {
-  border-radius: 8px;
+.text-center {
+  text-align: center;
 }
 
-.p-inputtext {
-  border-radius: 8px;
+.mb-2 {
+  margin-bottom: 0.5rem;
 }
 
-.p-card {
-  border-radius: 16px;
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
 }
 
 /* Icon Font */

@@ -12,7 +12,7 @@ import { User, AuthResponse, LoginRequest, RegisterRequest, ApiError } from '../
     providedIn: 'root'
 })
 export class AuthService {
-    private readonly API_URL = 'http://localhost:5207/api/auth';
+    private readonly API_URL = 'https://localhost:7146/api/auth';
 
     // Reactive state using Angular Signals
     private readonly _currentUser = signal<User | null>(null);

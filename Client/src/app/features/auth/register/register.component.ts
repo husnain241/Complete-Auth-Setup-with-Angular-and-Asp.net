@@ -10,6 +10,7 @@ import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 /**
  * Custom validator for password confirmation matching.
@@ -27,7 +28,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
 }
 
 /**
- * Registration component with reactive form validation.
+ * Registration component with reactive form validation and modern UI.
  */
 @Component({
   selector: 'app-register',
@@ -42,11 +43,12 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     DividerModule,
     IconFieldModule,
     InputIconModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    FloatLabelModule
   ],
   template: `
     <div class="register-container">
-      <div class="register-card">
+      <div class="glass-card register-card">
         <div class="register-header">
           <h1>Create Account</h1>
           <p>Join us today and get started</p>
@@ -55,54 +57,53 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
         @if (authService.error()) {
           <div class="error-message">
             <i class="pi pi-exclamation-circle"></i>
-            {{ authService.error() }}
+            <span>{{ authService.error() }}</span>
           </div>
         }
         
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          
           <div class="form-row">
-            <div class="form-field">
-              <label for="firstName">First Name</label>
-              <p-iconfield>
-                <p-inputicon styleClass="pi pi-user" />
+            <div class="form-field mb-4">
+              <p-floatLabel>
                 <input 
                   pInputText 
                   id="firstName" 
                   type="text" 
                   formControlName="firstName" 
-                  placeholder="John"
+                  class="w-full"
                 />
-              </p-iconfield>
+                <label for="firstName">First Name</label>
+              </p-floatLabel>
             </div>
             
-            <div class="form-field">
-              <label for="lastName">Last Name</label>
-              <p-iconfield>
-                <p-inputicon styleClass="pi pi-user" />
+            <div class="form-field mb-4">
+              <p-floatLabel>
                 <input 
                   pInputText 
                   id="lastName" 
                   type="text" 
                   formControlName="lastName" 
-                  placeholder="Doe"
+                  class="w-full"
                 />
-              </p-iconfield>
+                <label for="lastName">Last Name</label>
+              </p-floatLabel>
             </div>
           </div>
           
-          <div class="form-field">
-            <label for="email">Email</label>
-            <p-iconfield>
-              <p-inputicon styleClass="pi pi-envelope" />
+          <div class="form-field mb-4">
+            <p-floatLabel>
               <input 
                 pInputText 
                 id="email" 
                 type="email" 
                 formControlName="email" 
-                placeholder="john.doe@example.com"
+                class="w-full"
                 [class.ng-invalid]="isFieldInvalid('email')"
               />
-            </p-iconfield>
+              <label for="email">Email Address</label>
+            </p-floatLabel>
+            
             @if (isFieldInvalid('email')) {
               <small class="error-text">
                 @if (registerForm.get('email')?.errors?.['required']) {
@@ -114,17 +115,20 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
             }
           </div>
           
-          <div class="form-field">
-            <label for="password">Password</label>
-            <p-password 
-              id="password" 
-              formControlName="password" 
-              placeholder="Create a strong password"
-              [toggleMask]="true"
-              [feedback]="true"
-              styleClass="w-full"
-              inputStyleClass="w-full"
-            />
+          <div class="form-field mb-4">
+            <p-floatLabel>
+              <p-password 
+                id="password" 
+                formControlName="password" 
+                [toggleMask]="true"
+                [feedback]="true"
+                styleClass="w-full"
+                inputStyleClass="w-full"
+                [class.ng-invalid]="isFieldInvalid('password')"
+              />
+              <label for="password">Password</label>
+            </p-floatLabel>
+            
             @if (isFieldInvalid('password')) {
               <small class="error-text">
                 @if (registerForm.get('password')?.errors?.['required']) {
@@ -136,17 +140,20 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
             }
           </div>
           
-          <div class="form-field">
-            <label for="confirmPassword">Confirm Password</label>
-            <p-password 
-              id="confirmPassword" 
-              formControlName="confirmPassword" 
-              placeholder="Confirm your password"
-              [toggleMask]="true"
-              [feedback]="false"
-              styleClass="w-full"
-              inputStyleClass="w-full"
-            />
+          <div class="form-field mb-4">
+            <p-floatLabel>
+              <p-password 
+                id="confirmPassword" 
+                formControlName="confirmPassword" 
+                [toggleMask]="true"
+                [feedback]="false"
+                styleClass="w-full"
+                inputStyleClass="w-full"
+                [class.ng-invalid]="isFieldInvalid('confirmPassword')"
+              />
+              <label for="confirmPassword">Confirm Password</label>
+            </p-floatLabel>
+            
             @if (isFieldInvalid('confirmPassword')) {
               <small class="error-text">
                 @if (registerForm.get('confirmPassword')?.errors?.['required']) {
@@ -158,82 +165,81 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
             }
           </div>
           
-          <p-button 
-            type="submit" 
-            label="Create Account" 
-            icon="pi pi-user-plus"
-            styleClass="w-full register-button"
-            [loading]="authService.isLoading()"
-            [disabled]="registerForm.invalid || authService.isLoading()"
-          />
+          <div class="action-buttons mt-4">
+            <p-button 
+              type="submit" 
+              label="Create Account" 
+              icon="pi pi-user-plus"
+              styleClass="w-full"
+              [loading]="authService.isLoading()"
+              [disabled]="registerForm.invalid || authService.isLoading()"
+            />
+          </div>
         </form>
         
-        <p-divider align="center">
-          <span class="divider-text">or</span>
-        </p-divider>
+        <div class="divider-container">
+          <p-divider align="center">
+            <span class="divider-text">or</span>
+          </p-divider>
+        </div>
         
-        <div class="login-link">
+        <div class="login-link text-center">
           <span>Already have an account?</span>
-          <a routerLink="/auth/login">Sign in</a>
+          <a routerLink="/auth/login" class="highlight-link">Sign in</a>
         </div>
       </div>
     </div>
   `,
   styles: [`
     .register-container {
-      min-height: calc(100vh - 80px);
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
-      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      padding: 1.5rem;
     }
     
     .register-card {
       width: 100%;
-      max-width: 480px;
-      padding: 2.5rem;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      max-width: 500px;
+      padding: 3rem 2.5rem;
+      animation: fadeIn 0.6s ease-out;
     }
     
     .register-header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
       
       h1 {
-        font-size: 2rem;
+        font-size: 2.25rem;
         font-weight: 700;
-        margin-bottom: 0.5rem;
-        background: linear-gradient(90deg, #667eea, #764ba2);
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.025em;
+        background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        background-clip: text;
       }
       
       p {
-        color: #a0aec0;
-        font-size: 0.95rem;
+        color: var(--text-muted);
+        font-size: 1rem;
       }
     }
     
     .error-message {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
       padding: 1rem;
-      margin-bottom: 1.5rem;
-      background: rgba(239, 68, 68, 0.1);
+      margin-bottom: 2rem;
+      background: rgba(239, 68, 68, 0.15);
       border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 10px;
-      color: #f87171;
-      font-size: 0.9rem;
+      border-radius: 8px;
+      color: #fca5a5;
+      font-size: 0.95rem;
       
       i {
-        font-size: 1.1rem;
+        font-size: 1.25rem;
       }
     }
     
@@ -244,80 +250,62 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     }
     
     .form-field {
-      margin-bottom: 1.5rem;
-      
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: #e2e8f0;
-        font-size: 0.9rem;
-      }
-      
-      :host ::ng-deep {
-        .p-inputtext, .p-password input {
-          width: 100%;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #fff;
-          
-          &:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
-          }
-          
-          &.ng-invalid.ng-touched {
-            border-color: #ef4444;
-          }
-        }
-        
-        .p-iconfield {
-          width: 100%;
-        }
-      }
+      position: relative;
     }
     
     .error-text {
       display: block;
-      margin-top: 0.5rem;
-      color: #f87171;
-      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      margin-left: 0.25rem;
+      color: #fca5a5;
+      font-size: 0.85rem;
     }
     
-    :host ::ng-deep .register-button {
-      margin-top: 0.5rem;
+    .divider-container {
+      margin: 2rem 0;
       
-      .p-button {
-        background: linear-gradient(90deg, #667eea, #764ba2);
-        border: none;
-        padding: 0.875rem;
-        font-weight: 600;
-        
-        &:hover:not(:disabled) {
-          background: linear-gradient(90deg, #764ba2, #667eea);
-        }
+      .divider-text {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        background: transparent;
+        padding: 0 0.5rem;
       }
     }
     
-    .divider-text {
-      color: #64748b;
-      font-size: 0.875rem;
-    }
-    
     .login-link {
-      text-align: center;
-      color: #a0aec0;
-      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
       
-      a {
-        color: #667eea;
-        text-decoration: none;
+      .highlight-link {
+        color: #818cf8;
         font-weight: 600;
-        margin-left: 0.25rem;
+        margin-left: 0.5rem;
+        transition: color 0.2s;
         
         &:hover {
+          color: #a5b4fc;
           text-decoration: underline;
         }
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 480px) {
+      .register-card {
+        padding: 2rem 1.5rem;
+      }
+      
+      .register-header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
       }
     }
   `]
@@ -337,7 +325,7 @@ export class RegisterComponent {
 
   isFieldInvalid(field: string): boolean {
     const control = this.registerForm.get(field);
-    return !!(control?.invalid && control?.touched);
+    return !!(control?.invalid && (control?.dirty || control?.touched));
   }
 
   onSubmit(): void {
