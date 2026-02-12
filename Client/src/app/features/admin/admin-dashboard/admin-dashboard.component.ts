@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { CardModule } from 'primeng/card';
-import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 
@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CardModule, TableModule, TagModule, ButtonModule],
+  imports: [CommonModule, CardModule, TagModule, ButtonModule],
   template: `
     <div class="dashboard-container">
       <header class="dashboard-header">
@@ -21,7 +21,7 @@ import { ButtonModule } from 'primeng/button';
           <p>Welcome back, {{ authService.currentUser()?.firstName || 'Admin' }}</p>
         </div>
         <div class="header-badge">
-          <p-tag severity="warn" value="Admin" icon="pi pi-shield" />
+          <p-tag severity="info" value="Admin" icon="pi pi-shield" />
         </div>
       </header>
       
@@ -68,15 +68,15 @@ import { ButtonModule } from 'primeng/button';
       </div>
       
       <div class="content-grid">
-        <p-card header="Recent Activity" styleClass="activity-card">
+        <p-card header="Recent Activity" styleClass="activity-card glass-card">
           <div class="activity-list">
             @for (activity of recentActivity; track activity.id) {
               <div class="activity-item">
-                <div class="activity-icon" [class]="activity.type">
+                <div class="activity-icon-wrapper" [ngClass]="activity.type">
                   <i [class]="activity.icon"></i>
                 </div>
                 <div class="activity-details">
-                  <p class="activity-text">{{ activity.message }}</p>
+                  <p class="activity-message">{{ activity.message }}</p>
                   <span class="activity-time">{{ activity.time }}</span>
                 </div>
               </div>
@@ -84,32 +84,24 @@ import { ButtonModule } from 'primeng/button';
           </div>
         </p-card>
         
-        <p-card header="Quick Actions" styleClass="actions-card">
+        <p-card header="Quick Actions" styleClass="actions-card glass-card">
           <div class="actions-grid">
-            <p-button 
-              label="Manage Users" 
-              icon="pi pi-users" 
-              severity="secondary"
-              styleClass="action-button"
-            />
-            <p-button 
-              label="View Reports" 
-              icon="pi pi-chart-bar" 
-              severity="secondary"
-              styleClass="action-button"
-            />
-            <p-button 
-              label="System Settings" 
-              icon="pi pi-cog" 
-              severity="secondary"
-              styleClass="action-button"
-            />
-            <p-button 
-              label="View Logs" 
-              icon="pi pi-file" 
-              severity="secondary"
-              styleClass="action-button"
-            />
+            <button pButton class="action-btn">
+              <i class="pi pi-users text-2xl mb-2"></i>
+              <span>Manage Users</span>
+            </button>
+            <button pButton class="action-btn">
+              <i class="pi pi-chart-bar text-2xl mb-2"></i>
+              <span>View Reports</span>
+            </button>
+            <button pButton class="action-btn">
+              <i class="pi pi-cog text-2xl mb-2"></i>
+              <span>Settings</span>
+            </button>
+            <button pButton class="action-btn">
+              <i class="pi pi-file text-2xl mb-2"></i>
+              <span>View Logs</span>
+            </button>
           </div>
         </p-card>
       </div>
@@ -120,24 +112,29 @@ import { ButtonModule } from 'primeng/button';
       padding: 2rem;
       min-height: calc(100vh - 80px);
       background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+      color: #e2e8f0;
     }
     
     .dashboard-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
       
       .header-content {
         h1 {
-          font-size: 2rem;
+          font-size: 2.25rem;
           font-weight: 700;
           color: #fff;
-          margin-bottom: 0.25rem;
+          margin-bottom: 0.5rem;
+          background: linear-gradient(90deg, #fff, #cbd5e1);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
         
         p {
-          color: #a0aec0;
+          color: #94a3b8;
+          font-size: 1.1rem;
         }
       }
     }
@@ -146,29 +143,37 @@ import { ButtonModule } from 'primeng/button';
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 1.5rem;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
     
     .stat-card {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1.25rem;
       padding: 1.5rem;
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.2s, border-color 0.2s;
+      
+      &:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.15);
+      }
       
       .stat-icon {
-        width: 60px;
-        height: 60px;
+        width: 56px;
+        height: 56px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 12px;
+        border-radius: 14px;
         font-size: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         
         &.users {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
           color: #fff;
         }
         
@@ -194,11 +199,13 @@ import { ButtonModule } from 'primeng/button';
           font-weight: 700;
           color: #fff;
           margin-bottom: 0.25rem;
+          letter-spacing: -0.025em;
         }
         
         p {
-          color: #a0aec0;
-          font-size: 0.9rem;
+          color: #94a3b8;
+          font-size: 0.95rem;
+          font-weight: 500;
         }
       }
     }
@@ -207,27 +214,46 @@ import { ButtonModule } from 'primeng/button';
       display: grid;
       grid-template-columns: 2fr 1fr;
       gap: 1.5rem;
+      
+      @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+      }
     }
     
+    /* PrimeNG Overrides for Glassmorphism */
     :host ::ng-deep {
-      .activity-card, .actions-card {
-        .p-card {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 16px;
-        }
-        
-        .p-card-title {
-          color: #fff;
-          font-size: 1.1rem;
-        }
+      .p-card {
+        background: rgba(30, 41, 59, 0.4) !important;
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        color: #e2e8f0 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+      }
+      
+      .p-card-header {
+         padding: 1.5rem 1.5rem 0 1.5rem !important;
+      }
+      
+      .p-card-body {
+        padding: 1.5rem !important;
+      }
+      
+      .p-card-title {
+        color: #fff !important;
+        font-size: 1.25rem !important;
+        font-weight: 600 !important;
+      }
+      
+      .p-card-content {
+        padding: 1rem 0 0 0 !important;
       }
     }
     
     .activity-list {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.5rem;
     }
     
     .activity-item {
@@ -235,43 +261,43 @@ import { ButtonModule } from 'primeng/button';
       align-items: center;
       gap: 1rem;
       padding: 0.75rem;
-      border-radius: 8px;
+      border-radius: 12px;
       transition: background 0.2s;
       
       &:hover {
         background: rgba(255, 255, 255, 0.05);
       }
       
-      .activity-icon {
-        width: 40px;
-        height: 40px;
+      .activity-icon-wrapper {
+        width: 42px;
+        height: 42px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 8px;
+        border-radius: 10px;
         
         &.login {
-          background: rgba(102, 126, 234, 0.2);
-          color: #667eea;
+          background: rgba(99, 102, 241, 0.15);
+          color: #818cf8;
         }
         
         &.register {
-          background: rgba(16, 185, 129, 0.2);
-          color: #10b981;
+          background: rgba(16, 185, 129, 0.15);
+          color: #34d399;
         }
         
         &.warning {
-          background: rgba(245, 158, 11, 0.2);
-          color: #f59e0b;
+          background: rgba(245, 158, 11, 0.15);
+          color: #fbbf24;
         }
       }
       
       .activity-details {
         flex: 1;
         
-        .activity-text {
+        .activity-message {
           color: #e2e8f0;
-          font-size: 0.9rem;
+          font-size: 0.95rem;
           margin-bottom: 0.25rem;
         }
         
@@ -284,17 +310,39 @@ import { ButtonModule } from 'primeng/button';
     
     .actions-grid {
       display: grid;
-      gap: 0.75rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #e2e8f0;
+      transition: all 0.2s;
+      cursor: pointer;
+      width: 100%;
       
-      :host ::ng-deep .action-button .p-button {
-        width: 100%;
-        justify-content: flex-start;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        
-        &:hover {
-          background: rgba(255, 255, 255, 0.1);
-        }
+      &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+      
+      i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #818cf8;
+      }
+      
+      span {
+        font-size: 0.9rem;
+        font-weight: 500;
       }
     }
   `]
