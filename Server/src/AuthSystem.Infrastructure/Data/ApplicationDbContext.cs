@@ -1,13 +1,12 @@
 using AuthSystem.Core.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuthSystem.Infrastructure.Data;
 
 /// <summary>
-/// Application database context with Identity support.
+/// Application database context — plain DbContext, no Identity.
 /// </summary>
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
         : base(options)
@@ -15,40 +14,37 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
     
     /// <summary>
-    /// Refresh tokens table.
+    /// Users table.
     /// </summary>
-    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<User> Users => Set<User>();
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         
-        // Configure RefreshToken entity
-        builder.Entity<RefreshToken>(entity =>
+        builder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id);
             
-            entity.Property(e => e.Token)
+            entity.Property(e => e.Email)
                 .IsRequired()
                 .HasMaxLength(256);
             
-            entity.HasIndex(e => e.Token)
+            entity.HasIndex(e => e.Email)
                 .IsUnique();
             
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.RefreshTokens)
-                .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
-        
-        // Configure ApplicationUser
-        builder.Entity<ApplicationUser>(entity =>
-        {
+            entity.Property(e => e.PasswordHash)
+                .IsRequired();
+            
             entity.Property(e => e.FirstName)
                 .HasMaxLength(100);
             
             entity.Property(e => e.LastName)
                 .HasMaxLength(100);
+            
+            entity.Property(e => e.Role)
+                .IsRequired()
+                .HasMaxLength(50);
         });
     }
 }

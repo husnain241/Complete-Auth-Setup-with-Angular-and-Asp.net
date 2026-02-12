@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 
-// Infrastructure layer (DbContext, Identity, repositories)
+// Infrastructure layer (DbContext)
 builder.Services.AddInfrastructure(builder.Configuration);
 
 // JWT Authentication
@@ -27,8 +27,8 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Seed roles at startup
-await IdentitySeed.SeedAsync(app.Services);
+// Seed default admin user at startup
+await DataSeed.SeedAsync(app.Services);
 
 // Configure the HTTP request pipeline
 

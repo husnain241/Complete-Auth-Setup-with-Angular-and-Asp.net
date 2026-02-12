@@ -1,73 +1,69 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using AuthSystem.API.DTOs;
 using AuthSystem.Core.Common;
-using AuthSystem.Core.Interfaces;
+using AuthSystem.Core.Entities;
+using AuthSystem.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AuthSystem.API.Controllers;
 
 /// <summary>
-/// Authentication controller for login, registration, and token refresh.
+/// Authentication controller — all auth logic lives here, no abstraction layers.
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
-    private readonly ITokenService _tokenService;
+    private readonly ApplicationDbContext _context;
+    private readonly IConfiguration _configuration;
     private readonly ILogger<AuthController> _logger;
     
     public AuthController(
-        IAuthService authService,
-        ITokenService tokenService,
+        ApplicationDbContext context,
+        IConfiguration configuration,
         ILogger<AuthController> logger)
     {
-        _authService = authService;
-        _tokenService = tokenService;
+        _context = context;
+        _configuration = configuration;
         _logger = logger;
     }
     
     /// <summary>
-    /// Authenticates a user and returns JWT access token.
-    /// Refresh token is set in HttpOnly cookie.
+    /// Authenticates a user and returns a JWT access token.
     /// </summary>
     [HttpPost("login")]
     [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {
-        var authResult = await _authService.LoginAsync(request.Email, request.Password);
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == request.Email);
         
-        if (authResult.Result != AuthResultType.Success || authResult.User is null)
+        if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
+            _logger.LogWarning("Failed login attempt for: {Email}", request.Email);
             return Problem(
-                detail: authResult.ErrorMessage ?? "Authentication failed.",
+                detail: "Invalid email or password.",
                 statusCode: StatusCodes.Status401Unauthorized,
                 title: "Authentication Failed"
             );
         }
         
-        var ipAddress = GetIpAddress();
-        var tokenResult = await _tokenService.GenerateTokensAsync(
-            authResult.User, 
-            authResult.Roles ?? [], 
-            ipAddress);
+        var token = GenerateJwt(user);
+        var expiry = DateTime.UtcNow.AddMinutes(AuthConstants.AccessTokenExpiryMinutes);
         
-        SetRefreshTokenCookie(tokenResult.RefreshToken.Token, tokenResult.RefreshToken.ExpiresAt);
+        _logger.LogInformation("User logged in: {Email}", request.Email);
         
-        var response = new AuthResponseDto(
-            tokenResult.AccessToken,
-            tokenResult.AccessTokenExpiry,
-            new UserDto(
-                authResult.User.Id,
-                authResult.User.Email ?? "",
-                authResult.User.FirstName,
-                authResult.User.LastName,
-                authResult.Roles ?? []
-            )
-        );
-        
-        return Ok(response);
+        return Ok(new AuthResponseDto(
+            token,
+            expiry,
+            new UserDto(user.Id, user.Email, user.FirstName, user.LastName, user.Role)
+        ));
     }
     
     /// <summary>
@@ -78,127 +74,37 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
     {
-        var authResult = await _authService.RegisterAsync(
-            request.Email, 
-            request.Password, 
-            request.FirstName, 
-            request.LastName);
-        
-        if (authResult.Result != AuthResultType.Success || authResult.User is null)
+        if (await _context.Users.AnyAsync(u => u.Email == request.Email))
         {
             return Problem(
-                detail: authResult.ErrorMessage ?? "Registration failed.",
+                detail: "A user with this email already exists.",
                 statusCode: StatusCodes.Status400BadRequest,
                 title: "Registration Failed"
             );
         }
         
-        var ipAddress = GetIpAddress();
-        var tokenResult = await _tokenService.GenerateTokensAsync(
-            authResult.User, 
-            authResult.Roles ?? [], 
-            ipAddress);
-        
-        SetRefreshTokenCookie(tokenResult.RefreshToken.Token, tokenResult.RefreshToken.ExpiresAt);
-        
-        var response = new AuthResponseDto(
-            tokenResult.AccessToken,
-            tokenResult.AccessTokenExpiry,
-            new UserDto(
-                authResult.User.Id,
-                authResult.User.Email ?? "",
-                authResult.User.FirstName,
-                authResult.User.LastName,
-                authResult.Roles ?? []
-            )
-        );
-        
-        return CreatedAtAction(nameof(Register), response);
-    }
-    
-    /// <summary>
-    /// Refreshes the access token using the refresh token from cookie.
-    /// </summary>
-    [HttpPost("refresh")]
-    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Refresh()
-    {
-        var refreshToken = Request.Cookies[AuthConstants.RefreshTokenCookieName];
-        
-        if (string.IsNullOrEmpty(refreshToken))
+        var user = new User
         {
-            return Problem(
-                detail: "Refresh token not found.",
-                statusCode: StatusCodes.Status401Unauthorized,
-                title: "Token Refresh Failed"
-            );
-        }
+            Email = request.Email,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Role = AppRoles.User
+        };
         
-        var ipAddress = GetIpAddress();
-        var tokenResult = await _tokenService.RefreshTokenAsync(refreshToken, ipAddress);
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
         
-        if (tokenResult is null)
-        {
-            // Clear the invalid cookie
-            Response.Cookies.Delete(AuthConstants.RefreshTokenCookieName);
-            
-            return Problem(
-                detail: "Invalid or expired refresh token.",
-                statusCode: StatusCodes.Status401Unauthorized,
-                title: "Token Refresh Failed"
-            );
-        }
+        var token = GenerateJwt(user);
+        var expiry = DateTime.UtcNow.AddMinutes(AuthConstants.AccessTokenExpiryMinutes);
         
-        // Get user info
-        var user = await _authService.GetUserByIdAsync(tokenResult.RefreshToken.UserId);
-        if (user is null)
-        {
-            return Problem(
-                detail: "User not found.",
-                statusCode: StatusCodes.Status401Unauthorized,
-                title: "Token Refresh Failed"
-            );
-        }
+        _logger.LogInformation("User registered: {Email}", request.Email);
         
-        var roles = await _authService.GetUserRolesAsync(user);
-        
-        SetRefreshTokenCookie(tokenResult.RefreshToken.Token, tokenResult.RefreshToken.ExpiresAt);
-        
-        var response = new AuthResponseDto(
-            tokenResult.AccessToken,
-            tokenResult.AccessTokenExpiry,
-            new UserDto(
-                user.Id,
-                user.Email ?? "",
-                user.FirstName,
-                user.LastName,
-                roles
-            )
-        );
-        
-        return Ok(response);
-    }
-    
-    /// <summary>
-    /// Revokes the current refresh token (logout).
-    /// </summary>
-    [Authorize]
-    [HttpPost("logout")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Logout()
-    {
-        var refreshToken = Request.Cookies[AuthConstants.RefreshTokenCookieName];
-        
-        if (!string.IsNullOrEmpty(refreshToken))
-        {
-            var ipAddress = GetIpAddress();
-            await _tokenService.RevokeTokenAsync(refreshToken, ipAddress, "User logout");
-        }
-        
-        Response.Cookies.Delete(AuthConstants.RefreshTokenCookieName);
-        
-        return NoContent();
+        return CreatedAtAction(nameof(Register), new AuthResponseDto(
+            token,
+            expiry,
+            new UserDto(user.Id, user.Email, user.FirstName, user.LastName, user.Role)
+        ));
     }
     
     /// <summary>
@@ -210,7 +116,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetCurrentUser()
     {
-        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
             ?? User.FindFirst("sub")?.Value;
         
         if (string.IsNullOrEmpty(userId))
@@ -218,44 +124,56 @@ public class AuthController : ControllerBase
             return Unauthorized();
         }
         
-        var user = await _authService.GetUserByIdAsync(userId);
+        var user = await _context.Users.FindAsync(userId);
         if (user is null)
         {
             return NotFound();
         }
         
-        var roles = await _authService.GetUserRolesAsync(user);
-        
-        return Ok(new UserDto(
-            user.Id,
-            user.Email ?? "",
-            user.FirstName,
-            user.LastName,
-            roles
-        ));
+        return Ok(new UserDto(user.Id, user.Email, user.FirstName, user.LastName, user.Role));
     }
     
-    private void SetRefreshTokenCookie(string token, DateTime expires)
+    /// <summary>
+    /// Logout — client clears localStorage. Server just acknowledges.
+    /// </summary>
+    [Authorize]
+    [HttpPost("logout")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public IActionResult Logout()
     {
-        var cookieOptions = new CookieOptions
+        return NoContent();
+    }
+    
+    /// <summary>
+    /// Generates a JWT access token for the given user.
+    /// </summary>
+    private string GenerateJwt(User user)
+    {
+        var jwtSettings = _configuration.GetSection("JwtSettings");
+        var secretKey = jwtSettings["SecretKey"] 
+            ?? throw new InvalidOperationException("JWT SecretKey is not configured");
+        
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        
+        var claims = new List<Claim>
         {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = expires
+            new(JwtRegisteredClaimNames.Sub, user.Id),
+            new(JwtRegisteredClaimNames.Email, user.Email),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new("firstName", user.FirstName ?? ""),
+            new("lastName", user.LastName ?? ""),
+            new(ClaimTypes.Role, user.Role)
         };
         
-        Response.Cookies.Append(AuthConstants.RefreshTokenCookieName, token, cookieOptions);
-    }
-    
-    private string? GetIpAddress()
-    {
-        // Check for forwarded header first (behind proxy/load balancer)
-        if (Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor))
-        {
-            return forwardedFor.FirstOrDefault()?.Split(',').FirstOrDefault()?.Trim();
-        }
+        var token = new JwtSecurityToken(
+            issuer: jwtSettings["Issuer"],
+            audience: jwtSettings["Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(AuthConstants.AccessTokenExpiryMinutes),
+            signingCredentials: credentials
+        );
         
-        return HttpContext.Connection.RemoteIpAddress?.ToString();
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

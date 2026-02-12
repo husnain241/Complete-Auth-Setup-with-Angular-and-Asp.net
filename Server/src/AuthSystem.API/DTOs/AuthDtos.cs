@@ -51,5 +51,5 @@ public record UserDto(
     string Email,
     string? FirstName,
     string? LastName,
-    IEnumerable<string> Roles
+    string Role
 );

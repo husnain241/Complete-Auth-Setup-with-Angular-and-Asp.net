@@ -7,10 +7,5 @@ public enum AuthResultType
 {
     Success,
     InvalidCredentials,
-    UserNotFound,
-    UserLockedOut,
-    EmailNotConfirmed,
-    InvalidToken,
-    TokenExpired,
     UnknownError
 }

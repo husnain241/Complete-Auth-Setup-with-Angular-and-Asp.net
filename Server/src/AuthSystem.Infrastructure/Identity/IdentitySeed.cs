@@ -1,40 +1,41 @@
 using AuthSystem.Core.Common;
-using Microsoft.AspNetCore.Identity;
+using AuthSystem.Core.Entities;
+using AuthSystem.Infrastructure.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace AuthSystem.Infrastructure.Identity;
 
 /// <summary>
-/// Seeds default roles and admin user.
+/// Seeds a default admin user if none exists.
 /// </summary>
-public static class IdentitySeed
+public static class DataSeed
 {
-    /// <summary>
-    /// Seeds roles and optionally an admin user.
-    /// </summary>
     public static async Task SeedAsync(IServiceProvider serviceProvider)
     {
         using var scope = serviceProvider.CreateScope();
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<RoleManager<IdentityRole>>>();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
         
-        foreach (var role in AppRoles.AllRoles)
+        // Ensure database is created
+        await context.Database.EnsureCreatedAsync();
+        
+        // Seed admin user if none exists
+        if (!context.Users.Any(u => u.Role == AppRoles.Admin))
         {
-            if (!await roleManager.RoleExistsAsync(role))
+            var adminUser = new User
             {
-                var result = await roleManager.CreateAsync(new IdentityRole(role));
-                if (result.Succeeded)
-                {
-                    logger.LogInformation("Created role: {Role}", role);
-                }
-                else
-                {
-                    logger.LogError("Failed to create role {Role}: {Errors}", 
-                        role, 
-                        string.Join(", ", result.Errors.Select(e => e.Description)));
-                }
-            }
+                Email = "admin@authsystem.com",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+                FirstName = "System",
+                LastName = "Admin",
+                Role = AppRoles.Admin
+            };
+            
+            context.Users.Add(adminUser);
+            await context.SaveChangesAsync();
+            
+            logger.LogInformation("Seeded default admin user: {Email}", adminUser.Email);
         }
     }
 }

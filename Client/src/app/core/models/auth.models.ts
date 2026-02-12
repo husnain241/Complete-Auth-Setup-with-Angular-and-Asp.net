@@ -6,11 +6,11 @@ export interface User {
   email: string;
   firstName: string | null;
   lastName: string | null;
-  roles: string[];
+  role: string;
 }
 
 /**
- * Authentication response from login/register/refresh
+ * Authentication response from login/register
  */
 export interface AuthResponse {
   accessToken: string;
