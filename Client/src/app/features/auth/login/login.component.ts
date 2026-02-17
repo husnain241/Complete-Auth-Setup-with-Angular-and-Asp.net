@@ -10,7 +10,6 @@ import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { FloatLabelModule } from 'primeng/floatlabel';
 
 /**
  * Login component with reactive form validation and modern UI.
@@ -28,8 +27,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
     DividerModule,
     IconFieldModule,
     InputIconModule,
-    ProgressSpinnerModule,
-    FloatLabelModule
+    ProgressSpinnerModule
   ],
   template: `
     <div class="login-container">
@@ -49,18 +47,16 @@ import { FloatLabelModule } from 'primeng/floatlabel';
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           
           <div class="form-field mb-4">
-            <p-floatLabel>
-              <input 
-                pInputText 
-                id="email" 
-                type="email" 
-                formControlName="email" 
-                class="w-full"
-                [class.ng-invalid]="isFieldInvalid('email')"
-              />
-              <label for="email">Email Address</label>
-            </p-floatLabel>
-            
+            <label for="email" class="block text-sm font-medium mb-2 text-gray-300">Email Address</label>
+            <input 
+              pInputText 
+              id="email" 
+              type="email" 
+              formControlName="email" 
+              class="w-full"
+              [class.ng-invalid]="isFieldInvalid('email')"
+              placeholder="name@example.com"
+            />
             @if (isFieldInvalid('email')) {
               <small class="error-text">
                 @if (loginForm.get('email')?.errors?.['required']) {
@@ -73,19 +69,17 @@ import { FloatLabelModule } from 'primeng/floatlabel';
           </div>
           
           <div class="form-field mb-4">
-            <p-floatLabel>
-              <p-password 
-                id="password" 
-                formControlName="password" 
-                [toggleMask]="true"
-                [feedback]="false"
-                styleClass="w-full"
-                inputStyleClass="w-full"
-                [class.ng-invalid]="isFieldInvalid('password')"
-              />
-              <label for="password">Password</label>
-            </p-floatLabel>
-            
+            <label for="password" class="block text-sm font-medium mb-2 text-gray-300">Password</label>
+            <p-password 
+              id="password" 
+              formControlName="password" 
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              [class.ng-invalid]="isFieldInvalid('password')"
+              placeholder="••••••••"
+            />
             @if (isFieldInvalid('password')) {
               <small class="error-text">
                 @if (loginForm.get('password')?.errors?.['required']) {
@@ -97,7 +91,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
             }
           </div>
           
-          <div class="action-buttons mt-4">
+          <div class="action-buttons mt-6">
             <p-button 
               type="submit" 
               label="Sign In" 
@@ -129,14 +123,14 @@ import { FloatLabelModule } from 'primeng/floatlabel';
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
-      /* Background handled globally, but ensuring container placement */
     }
     
     .login-card {
       width: 100%;
       max-width: 440px;
-      padding: 3rem 2.5rem;
+      padding: 3.5rem 2.5rem;
       animation: fadeIn 0.6s ease-out;
+      border-radius: 20px;
     }
     
     .login-header {
@@ -144,18 +138,17 @@ import { FloatLabelModule } from 'primeng/floatlabel';
       margin-bottom: 2.5rem;
       
       h1 {
-        font-size: 2.25rem;
-        font-weight: 700;
-        margin-bottom: 0.75rem;
-        letter-spacing: -0.025em;
-        background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
       
       p {
         color: var(--text-muted);
-        font-size: 1rem;
+        font-size: 1.05rem;
       }
     }
     
@@ -165,36 +158,43 @@ import { FloatLabelModule } from 'primeng/floatlabel';
       gap: 0.75rem;
       padding: 1rem;
       margin-bottom: 2rem;
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 8px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 12px;
       color: #fca5a5;
       font-size: 0.95rem;
       
-      i {
-        font-size: 1.25rem;
-      }
+      i { font-size: 1.25rem; }
     }
     
     .form-field {
       position: relative;
+      margin-bottom: 1.5rem;
+      
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
     }
     
     .error-text {
       display: block;
-      margin-top: 0.25rem;
+      margin-top: 0.4rem;
       margin-left: 0.25rem;
-      color: #fca5a5;
+      color: #ef4444;
       font-size: 0.85rem;
     }
     
     .divider-container {
-      margin: 2rem 0;
+      margin: 2.5rem 0;
       
       .divider-text {
         color: var(--text-muted);
         font-size: 0.9rem;
-        background: transparent; 
+        background: transparent;
         padding: 0 0.5rem;
       }
     }
@@ -204,32 +204,25 @@ import { FloatLabelModule } from 'primeng/floatlabel';
       font-size: 0.95rem;
       
       .highlight-link {
-        color: #818cf8;
+        color: var(--primary-color);
         font-weight: 600;
         margin-left: 0.5rem;
-        transition: color 0.2s;
         
         &:hover {
-          color: #a5b4fc;
+          color: var(--primary-hover);
           text-decoration: underline;
         }
       }
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
-    /* Responsive details */
     @media (max-width: 480px) {
-      .login-card {
-        padding: 2rem 1.5rem;
-      }
-      
-      .login-header h1 {
-        font-size: 1.75rem;
-      }
+      .login-card { padding: 2rem 1.5rem; }
+      .login-header h1 { font-size: 2rem; }
     }
   `]
 })
@@ -252,9 +245,20 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
-        next: () => {
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-          this.router.navigateByUrl(returnUrl);
+        next: (response) => {
+          // Check for redirect URL from query params first
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+
+          if (returnUrl) {
+            this.router.navigateByUrl(returnUrl);
+          } else {
+            // Role-based redirection
+            if (this.authService.isAdmin()) {
+              this.router.navigate(['/admin']);
+            } else {
+              this.router.navigate(['/']);
+            }
+          }
         }
       });
     } else {

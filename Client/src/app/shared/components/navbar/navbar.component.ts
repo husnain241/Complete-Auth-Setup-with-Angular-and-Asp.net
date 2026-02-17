@@ -25,10 +25,10 @@ import { CommonModule } from '@angular/common';
       
       <!-- Search Bar (Desktop) -->
       <div class="navbar-search">
-        <span class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input type="text" pInputText placeholder="Search phones, accessories..." />
-        </span>
+        <div class="search-wrapper">
+          <i class="pi pi-search search-icon"></i>
+          <input type="text" pInputText placeholder="Search for phones, accessories..." />
+        </div>
       </div>
 
       <!-- Actions Section -->
@@ -50,7 +50,7 @@ import { CommonModule } from '@angular/common';
               <button pButton label="Login" class="p-button-text"></button>
             </a>
             <a routerLink="/auth/register">
-              <button pButton label="Register" class="p-button-primary"></button>
+              <button pButton label="Register" class="p-button-rounded"></button>
             </a>
            </div>
         }
@@ -62,25 +62,31 @@ import { CommonModule } from '@angular/common';
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 2rem;
+      padding: 1rem 2.5rem;
       position: sticky;
-      top: 1rem;
+      top: 1.5rem;
       z-index: 1000;
-      margin: 0 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 0 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(10, 15, 30, 0.7);
+      backdrop-filter: blur(16px);
     }
     
     .navbar-brand .brand-link {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 1.5rem;
+      gap: 0.75rem;
+      font-size: 1.75rem;
       font-weight: 800;
       color: var(--text-main);
+      letter-spacing: -0.02em;
       
       .brand-icon {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
         color: var(--primary-color);
+        background: rgba(59, 130, 246, 0.1);
+        padding: 0.5rem;
+        border-radius: 12px;
       }
       
       .highlight {
@@ -90,25 +96,40 @@ import { CommonModule } from '@angular/common';
     
     .navbar-search {
       flex: 1;
-      max-width: 500px;
-      margin: 0 2rem;
+      max-width: 480px;
+      margin: 0 3rem;
       
-      .p-input-icon-left {
-        width: 100%;
-        i { color: var(--text-muted); }
-      }
-      
-      input {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--border-color);
-        color: var(--text-main);
-        border-radius: 50px;
-        padding-left: 2.5rem;
+      .search-wrapper {
+        position: relative;
         
-        &:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--primary-color);
+        .search-icon {
+          position: absolute;
+          left: 1.25rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: var(--text-muted);
+          font-size: 1.1rem;
+        }
+        
+        input {
+          width: 100%;
+          background: rgba(17, 24, 39, 0.6);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: var(--text-main);
+          border-radius: 50px;
+          padding: 0.85rem 1.5rem 0.85rem 3rem;
+          font-size: 0.95rem;
+          transition: all 0.2s;
+          
+          &:focus {
+              background: rgba(17, 24, 39, 0.9);
+              border-color: var(--primary-color);
+              box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+          }
+          
+          &::placeholder {
+            color: #6b7280;
+          }
         }
       }
     }
@@ -116,35 +137,47 @@ import { CommonModule } from '@angular/common';
     .navbar-actions {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 1.5rem;
       
       .action-btn {
         color: var(--text-main);
-        &:hover { color: var(--primary-color); background: rgba(255,255,255,0.05); }
+        width: 44px;
+        height: 44px;
+        
+        &:hover { 
+          color: var(--primary-color); 
+          background: rgba(255,255,255,0.05); 
+        }
       }
     }
     
     .user-menu {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 1rem;
         
         .user-greeting {
             display: none;
-            @media(min-width: 768px) { display: block; }
-            font-size: 0.9rem;
+            @media(min-width: 1024px) { display: block; }
+            font-size: 0.95rem;
             color: var(--text-muted);
+            font-weight: 500;
         }
     }
     
     .auth-buttons {
         display: flex;
-        gap: 0.5rem;
+        gap: 1rem;
+        align-items: center;
+        
+        a {
+          text-decoration: none;
+        }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
+      .navbar { margin: 0; top: 0; border-radius: 0; border-top: none; padding: 1rem 1.5rem; }
       .navbar-search { display: none; }
-      .navbar { padding: 0.75rem 1rem; margin: 0; top: 0; border-radius: 0; border-top: none; }
     }
   `]
 })

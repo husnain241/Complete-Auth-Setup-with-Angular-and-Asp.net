@@ -10,7 +10,6 @@ import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { FloatLabelModule } from 'primeng/floatlabel';
 
 /**
  * Custom validator for password confirmation matching.
@@ -43,8 +42,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     DividerModule,
     IconFieldModule,
     InputIconModule,
-    ProgressSpinnerModule,
-    FloatLabelModule
+    ProgressSpinnerModule
   ],
   template: `
     <div class="register-container">
@@ -65,44 +63,41 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
           
           <div class="form-row">
             <div class="form-field mb-4">
-              <p-floatLabel>
-                <input 
-                  pInputText 
-                  id="firstName" 
-                  type="text" 
-                  formControlName="firstName" 
-                  class="w-full"
-                />
-                <label for="firstName">First Name</label>
-              </p-floatLabel>
+              <label for="firstName">First Name</label>
+              <input 
+                pInputText 
+                id="firstName" 
+                type="text" 
+                formControlName="firstName" 
+                class="w-full"
+                placeholder="John"
+              />
             </div>
             
             <div class="form-field mb-4">
-              <p-floatLabel>
-                <input 
-                  pInputText 
-                  id="lastName" 
-                  type="text" 
-                  formControlName="lastName" 
-                  class="w-full"
-                />
-                <label for="lastName">Last Name</label>
-              </p-floatLabel>
+              <label for="lastName">Last Name</label>
+              <input 
+                pInputText 
+                id="lastName" 
+                type="text" 
+                formControlName="lastName" 
+                class="w-full"
+                placeholder="Doe"
+              />
             </div>
           </div>
           
           <div class="form-field mb-4">
-            <p-floatLabel>
-              <input 
-                pInputText 
-                id="email" 
-                type="email" 
-                formControlName="email" 
-                class="w-full"
-                [class.ng-invalid]="isFieldInvalid('email')"
-              />
-              <label for="email">Email Address</label>
-            </p-floatLabel>
+            <label for="email">Email Address</label>
+            <input 
+              pInputText 
+              id="email" 
+              type="email" 
+              formControlName="email" 
+              class="w-full"
+              [class.ng-invalid]="isFieldInvalid('email')"
+              placeholder="name@example.com"
+            />
             
             @if (isFieldInvalid('email')) {
               <small class="error-text">
@@ -116,18 +111,17 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
           </div>
           
           <div class="form-field mb-4">
-            <p-floatLabel>
-              <p-password 
-                id="password" 
-                formControlName="password" 
-                [toggleMask]="true"
-                [feedback]="true"
-                styleClass="w-full"
-                inputStyleClass="w-full"
-                [class.ng-invalid]="isFieldInvalid('password')"
-              />
-              <label for="password">Password</label>
-            </p-floatLabel>
+            <label for="password">Password</label>
+            <p-password 
+              id="password" 
+              formControlName="password" 
+              [toggleMask]="true"
+              [feedback]="true"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              [class.ng-invalid]="isFieldInvalid('password')"
+              placeholder="••••••••"
+            />
             
             @if (isFieldInvalid('password')) {
               <small class="error-text">
@@ -141,18 +135,17 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
           </div>
           
           <div class="form-field mb-4">
-            <p-floatLabel>
-              <p-password 
-                id="confirmPassword" 
-                formControlName="confirmPassword" 
-                [toggleMask]="true"
-                [feedback]="false"
-                styleClass="w-full"
-                inputStyleClass="w-full"
-                [class.ng-invalid]="isFieldInvalid('confirmPassword')"
-              />
-              <label for="confirmPassword">Confirm Password</label>
-            </p-floatLabel>
+            <label for="confirmPassword">Confirm Password</label>
+            <p-password 
+              id="confirmPassword" 
+              formControlName="confirmPassword" 
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              [class.ng-invalid]="isFieldInvalid('confirmPassword')"
+              placeholder="••••••••"
+            />
             
             @if (isFieldInvalid('confirmPassword')) {
               <small class="error-text">
@@ -165,7 +158,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
             }
           </div>
           
-          <div class="action-buttons mt-4">
+          <div class="action-buttons mt-6">
             <p-button 
               type="submit" 
               label="Create Account" 
@@ -201,9 +194,10 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     
     .register-card {
       width: 100%;
-      max-width: 500px;
-      padding: 3rem 2.5rem;
+      max-width: 520px;
+      padding: 3.5rem 2.5rem;
       animation: fadeIn 0.6s ease-out;
+      border-radius: 20px;
     }
     
     .register-header {
@@ -211,18 +205,17 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
       margin-bottom: 2.5rem;
       
       h1 {
-        font-size: 2.25rem;
-        font-weight: 700;
-        margin-bottom: 0.75rem;
-        letter-spacing: -0.025em;
-        background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
       
       p {
         color: var(--text-muted);
-        font-size: 1rem;
+        font-size: 1.05rem;
       }
     }
     
@@ -232,37 +225,44 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
       gap: 0.75rem;
       padding: 1rem;
       margin-bottom: 2rem;
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 8px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 12px;
       color: #fca5a5;
       font-size: 0.95rem;
       
-      i {
-        font-size: 1.25rem;
-      }
+      i { font-size: 1.25rem; }
     }
     
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 1.5rem;
     }
     
     .form-field {
       position: relative;
+      margin-bottom: 1.5rem;
+      
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
     }
     
     .error-text {
       display: block;
-      margin-top: 0.25rem;
+      margin-top: 0.4rem;
       margin-left: 0.25rem;
-      color: #fca5a5;
+      color: #ef4444;
       font-size: 0.85rem;
     }
     
     .divider-container {
-      margin: 2rem 0;
+      margin: 2.5rem 0;
       
       .divider-text {
         color: var(--text-muted);
@@ -277,36 +277,26 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
       font-size: 0.95rem;
       
       .highlight-link {
-        color: #818cf8;
+        color: var(--primary-color);
         font-weight: 600;
         margin-left: 0.5rem;
-        transition: color 0.2s;
         
         &:hover {
-          color: #a5b4fc;
+          color: var(--primary-hover);
           text-decoration: underline;
         }
       }
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
     @media (max-width: 480px) {
-      .register-card {
-        padding: 2rem 1.5rem;
-      }
-      
-      .register-header h1 {
-        font-size: 1.75rem;
-      }
-      
-      .form-row {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
+      .register-card { padding: 2rem 1.5rem; }
+      .register-header h1 { font-size: 2rem; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
     }
   `]
 })
