@@ -2,316 +2,295 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
+import { CommonModule } from '@angular/common';
+import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
+import { CarouselModule } from 'primeng/carousel';
 
-/**
- * Home page component - displays landing content.
- */
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, ButtonModule, CardModule],
+  imports: [CommonModule, RouterLink, ButtonModule, ProductCardComponent, CarouselModule],
   template: `
     <div class="home-container">
-      <section class="hero">
+      <!-- Hero Section -->
+      <section class="hero glass-panel">
         <div class="hero-content">
+          <div class="hero-badge">New Arrival</div>
           <h1 class="hero-title">
-            Secure Authentication
-            <span class="gradient-text">Made Simple</span>
+            iPhone 16 <span class="gradient-text">Pro Max</span>
           </h1>
           <p class="hero-subtitle">
-            Enterprise-grade authentication system built with ASP.NET Core 10 and Angular 21.
-            Featuring JWT tokens, refresh token rotation, and role-based access control.
+            Titanium design, A18 Pro chip, and the best camera system ever in an iPhone.
+            Experience the future today.
           </p>
+          <div class="hero-price">
+            From <span class="price">$1199</span>
+          </div>
           
-          @if (!authService.isAuthenticated()) {
-            <div class="hero-actions">
-              <a routerLink="/auth/register">
-                <p-button 
-                  label="Get Started" 
-                  icon="pi pi-arrow-right" 
-                  iconPos="right"
-                  styleClass="hero-button primary"
-                />
-              </a>
-              <a routerLink="/auth/login">
-                <p-button 
-                  label="Sign In" 
-                  icon="pi pi-sign-in"
-                  severity="secondary"
-                  [outlined]="true"
-                  styleClass="hero-button"
-                />
-              </a>
-            </div>
-          } @else {
-            <div class="welcome-section">
-              <p class="welcome-text">
-                Welcome back, <strong>{{ authService.currentUser()?.firstName || authService.currentUser()?.email }}</strong>!
-              </p>
-              @if (authService.isAdmin()) {
-                <a routerLink="/admin">
-                  <p-button 
-                    label="Go to Admin Dashboard" 
-                    icon="pi pi-shield"
-                    styleClass="hero-button primary"
-                  />
-                </a>
-              }
-            </div>
-          }
+          <div class="hero-actions">
+            <button pButton label="Buy Now" icon="pi pi-shopping-bag" class="p-button-lg p-button-rounded"></button>
+            <button pButton label="View Specs" icon="pi pi-info-circle" class="p-button-lg p-button-rounded p-button-outlined"></button>
+          </div>
         </div>
         
         <div class="hero-visual">
-          <div class="visual-card">
-            <div class="card-header">
-              <div class="dots">
-                <span class="dot red"></span>
-                <span class="dot yellow"></span>
-                <span class="dot green"></span>
+          <!-- Placeholder for Hero Image - would normally be a real image -->
+           <div class="phone-mockup">
+              <div class="screen-content">
+                  <i class="pi pi-apple" style="font-size: 5rem; color: #fff;"></i>
               </div>
-              <span class="card-title">auth.service.ts</span>
-            </div>
-            <pre class="code-preview"><code>&#64;Injectable()
-export class AuthService &#123;
-  private readonly _currentUser = 
-    signal&lt;User | null&gt;(null);
-  
-  public readonly isAuthenticated = 
-    computed(() => !!this._currentUser());
-  
-  login(request: LoginRequest) &#123;
-    return this.http.post('/api/auth/login');
-  &#125;
-&#125;</code></pre>
+           </div>
+        </div>
+      </section>
+      
+      <!-- Featured Products -->
+      <section class="products-section container">
+        <div class="section-header">
+           <h2 class="section-title">Trending <span>Smartphones</span></h2>
+           <a routerLink="/shop" class="view-all">View All <i class="pi pi-arrow-right"></i></a>
+        </div>
+        
+        <div class="products-grid">
+          @for (product of featuredProducts; track product.id) {
+            <app-product-card
+              [title]="product.name"
+              [price]="product.price"
+              [originalPrice]="product.originalPrice"
+              [discount]="product.discount"
+              [category]="product.brand"
+              [image]="product.image"
+            />
+          }
+        </div>
+      </section>
+
+      <!-- Why Choose Us -->
+      <section class="features-section container">
+        <div class="features-grid-cards">
+          <div class="feature-card glass-panel">
+            <div class="icon-wrapper"><i class="pi pi-shield"></i></div>
+            <h3>Official Warranty</h3>
+            <p>1 Year Official Brand Warranty on all devices.</p>
+          </div>
+          
+          <div class="feature-card glass-panel">
+            <div class="icon-wrapper"><i class="pi pi-truck"></i></div>
+            <h3>Fast Delivery</h3>
+            <p>Free express shipping on orders over $500.</p>
+          </div>
+          
+          <div class="feature-card glass-panel">
+            <div class="icon-wrapper"><i class="pi pi-wallet"></i></div>
+            <h3>Best Price Guarantee</h3>
+            <p>We match any authorized retailer's price.</p>
+          </div>
+          
+          <div class="feature-card glass-panel">
+            <div class="icon-wrapper"><i class="pi pi-headphones"></i></div>
+            <h3>24/7 Support</h3>
+            <p>Expert assistance whenever you need it.</p>
           </div>
         </div>
       </section>
       
-      <section class="features">
-        <h2 class="section-title">Features</h2>
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">🔐</div>
-            <h3>JWT Authentication</h3>
-            <p>Secure token-based authentication with 15-minute access tokens and automatic refresh.</p>
-          </div>
-          
-          <div class="feature-card">
-            <div class="feature-icon">🔄</div>
-            <h3>Token Rotation</h3>
-            <p>Refresh tokens are rotated on each use for enhanced security and protection.</p>
-          </div>
-          
-          <div class="feature-card">
-            <div class="feature-icon">👥</div>
-            <h3>Role-Based Access</h3>
-            <p>Granular access control with Admin and User roles for route protection.</p>
-          </div>
-          
-          <div class="feature-card">
-            <div class="feature-icon">📱</div>
-            <h3>Angular Signals</h3>
-            <p>Modern reactive state management using Angular's new Signals API.</p>
-          </div>
+      <!-- CTA Section -->
+      <section class="cta-section">
+        <div class="cta-content glass-panel">
+          <h2>Ready to upgrade?</h2>
+          <p>Trade in your old device and get up to $500 credit towards your new phone.</p>
+          <button pButton label="Check Trade-in Value" class="p-button-rounded p-button-warning"></button>
         </div>
       </section>
     </div>
   `,
   styles: [`
     .home-container {
-      min-height: calc(100vh - 80px);
-      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+      padding-bottom: 4rem;
     }
     
+    /* Hero */
     .hero {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      padding: 4rem;
-      max-width: 1400px;
-      margin: 0 auto;
       align-items: center;
+      gap: 4rem;
+      padding: 4rem 6rem;
+      margin: 2rem 2rem 4rem;
+      min-height: 500px;
+      position: relative;
+      overflow: hidden;
       
-      @media (max-width: 1024px) {
+      @media (max-width: 968px) {
         grid-template-columns: 1fr;
         text-align: center;
+        padding: 3rem 2rem;
       }
     }
     
+    .hero-content {
+      z-index: 2;
+    }
+    
+    .hero-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--text-highlight);
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+    }
+    
     .hero-title {
-      font-size: 3.5rem;
+      font-size: 4rem;
       font-weight: 800;
-      color: #fff;
       line-height: 1.1;
       margin-bottom: 1.5rem;
       
       .gradient-text {
-        display: block;
-        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        color: var(--primary-color);
+        background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        background-clip: text;
       }
     }
     
     .hero-subtitle {
       font-size: 1.25rem;
-      color: #a0aec0;
-      line-height: 1.7;
+      color: var(--text-muted);
       margin-bottom: 2rem;
-      max-width: 540px;
+      max-width: 600px;
+    }
+    
+    .hero-price {
+      font-size: 1.5rem;
+      color: var(--text-main);
+      margin-bottom: 2.5rem;
+      
+      .price {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+      }
     }
     
     .hero-actions {
       display: flex;
       gap: 1rem;
       
-      @media (max-width: 1024px) {
-        justify-content: center;
-      }
-    }
-    
-    :host ::ng-deep .hero-button {
-      &.primary .p-button {
-        background: linear-gradient(90deg, #667eea, #764ba2);
-        border: none;
-        padding: 0.875rem 1.5rem;
-        font-weight: 600;
-        
-        &:hover {
-          background: linear-gradient(90deg, #764ba2, #667eea);
-        }
-      }
-      
-      .p-button-outlined {
-        border-color: rgba(102, 126, 234, 0.5);
-        color: #667eea;
-        
-        &:hover {
-          background: rgba(102, 126, 234, 0.1);
-        }
-      }
-    }
-    
-    .welcome-section {
-      .welcome-text {
-        font-size: 1.25rem;
-        color: #e2e8f0;
-        margin-bottom: 1.5rem;
-        
-        strong {
-          color: #667eea;
-        }
-      }
+      @media (max-width: 968px) { justify-content: center; }
     }
     
     .hero-visual {
-      @media (max-width: 1024px) {
-        display: none;
-      }
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       
+       .phone-mockup {
+           width: 300px;
+           height: 600px;
+           background: #000;
+           border-radius: 40px;
+           border: 8px solid #333;
+           position: relative;
+           box-shadow: 0 0 50px rgba(59, 130, 246, 0.2);
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           background: linear-gradient(135deg, #1f2937, #111827);
+       }
     }
     
-    .visual-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    /* Products Section */
+    .products-section {
+      margin-bottom: 6rem;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
       
-      .card-header {
+      .view-all {
+        color: var(--primary-color);
+        font-weight: 600;
         display: flex;
         align-items: center;
-        gap: 0.75rem;
-        padding: 0.75rem 1rem;
-        background: rgba(0, 0, 0, 0.3);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      }
-      
-      .dots {
-        display: flex;
         gap: 0.5rem;
         
-        .dot {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          
-          &.red { background: #ef4444; }
-          &.yellow { background: #eab308; }
-          &.green { background: #22c55e; }
-        }
-      }
-      
-      .card-title {
-        color: #64748b;
-        font-size: 0.85rem;
-      }
-      
-      .code-preview {
-        padding: 1.5rem;
-        margin: 0;
-        
-        code {
-          font-family: 'Fira Code', 'Consolas', monospace;
-          font-size: 0.9rem;
-          color: #e2e8f0;
-          line-height: 1.6;
-        }
+        &:hover { gap: 0.75rem; }
       }
     }
     
-    .features {
-      padding: 4rem;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    
-    .section-title {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 3rem;
-    }
-    
-    .features-grid {
+    .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    
+    /* Features Section */
+    .features-section {
+      margin-bottom: 6rem;
+    }
+    
+    .features-grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
     }
     
     .feature-card {
       padding: 2rem;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      transition: transform 0.2s, border-color 0.2s;
+      text-align: center;
+      transition: transform 0.3s;
       
-      &:hover {
-        transform: translateY(-4px);
-        border-color: rgba(102, 126, 234, 0.3);
+      &:hover { transform: translateY(-5px); }
+      
+      .icon-wrapper {
+        width: 60px;
+        height: 60px;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        
+        i { font-size: 1.5rem; color: var(--primary-color); }
       }
       
-      .feature-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-      }
-      
-      h3 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #fff;
-        margin-bottom: 0.75rem;
-      }
-      
-      p {
-        color: #a0aec0;
-        line-height: 1.6;
+      h3 { margin-bottom: 0.75rem; color: var(--text-main); }
+      p { color: var(--text-muted); font-size: 0.95rem; }
+    }
+    
+    /* CTA Section */
+    .cta-section {
+      padding: 0 2rem;
+      .cta-content {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 4rem;
+        text-align: center;
+        
+        h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+        p { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 2rem; }
       }
     }
   `]
 })
 export class HomeComponent {
   public readonly authService = inject(AuthService);
+
+  featuredProducts = [
+    { id: 1, name: 'iPhone 16 Pro', brand: 'Apple', price: 999, originalPrice: 1099, discount: 10, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=iPhone+16' },
+    { id: 2, name: 'Samsung S25 Ultra', brand: 'Samsung', price: 1299, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=S25+Ultra' },
+    { id: 3, name: 'Google Pixel 9 Pro', brand: 'Google', price: 899, originalPrice: 999, discount: 10, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=Pixel+9' },
+    { id: 4, name: 'Sony WH-1000XM6', brand: 'Sony', price: 349, originalPrice: 399, discount: 12, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=Headphones' },
+  ];
 }
+
