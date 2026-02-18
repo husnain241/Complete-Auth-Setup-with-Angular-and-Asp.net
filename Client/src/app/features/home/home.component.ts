@@ -296,7 +296,7 @@ import { CarouselModule } from 'primeng/carousel';
         margin: 0 auto;
         padding: 5rem 2rem;
         text-align: center;
-        background: linear-gradient(135deg, rgba(31, 41, 55, 0.6) 0%, rgba(17, 24, 39, 0.8) 100%);
+        background: linear-gradient(135deg, rgba(31, 41, 55, 0.7) 0%, rgba(17, 24, 39, 0.8) 100%);
         
         h2 { font-size: 3rem; margin-bottom: 1.5rem; }
         p { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto; }
