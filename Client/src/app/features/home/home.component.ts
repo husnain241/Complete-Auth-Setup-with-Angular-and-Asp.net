@@ -311,7 +311,7 @@ export class HomeComponent {
     { id: 1, name: 'iPhone 16 Pro', brand: 'Apple', price: 999, originalPrice: 1099, discount: 10, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=iPhone+16' },
     { id: 2, name: 'Samsung S25 Ultra', brand: 'Samsung', price: 1299, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=S25+Ultra' },
     { id: 3, name: 'Google Pixel 9 Pro', brand: 'Google', price: 899, originalPrice: 999, discount: 10, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=Pixel+9' },
-    { id: 4, name: 'Sony WH-1000XM6', brand: 'Sony', price: 349, originalPrice: 399, discount: 12, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=Headphones' },
+    { id: 4, name: 'Sony WH-1000XM6', brand: 'Sony', price: 349, originalPrice: 399, discount: 12, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=Headphones' },{ id: 5, name: 'Apple AirPods Pro', brand: 'Apple', price: 249, originalPrice: 279, discount: 11, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=AirPods+Pro' },{ id: 6, name: 'Microsoft Surface Headphones 2', brand: 'Microsoft', price: 199, originalPrice: 249, discount: 20, image: 'https://via.placeholder.com/300/111827/FFFFFF?text=Surface+Headphones' },
   ];
 }
 
