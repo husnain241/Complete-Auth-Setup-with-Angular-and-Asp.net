@@ -1,4 +1,7 @@
+using AuthSystem.Core.Interfaces;
+using AuthSystem.Core.Services;
 using AuthSystem.Infrastructure.Data;
+using AuthSystem.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +26,11 @@ public static class DependencyInjection
         
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
-        
+        // Inside your AddInfrastructure or similar method:
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserService, UserService>();
+
+
         return services;
     }
 }

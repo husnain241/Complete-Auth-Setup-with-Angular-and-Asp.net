@@ -5,8 +5,7 @@ namespace AuthSystem.Core.Entities;
 /// </summary>
 public class User
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    
+    public int Id { get; set; }
     public required string Email { get; set; }
     
     public required string PasswordHash { get; set; }

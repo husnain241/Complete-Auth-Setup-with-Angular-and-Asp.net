@@ -47,7 +47,7 @@ public record AuthResponseDto(
 /// User information DTO.
 /// </summary>
 public record UserDto(
-    string Id,
+    int Id,
     string Email,
     string? FirstName,
     string? LastName,
