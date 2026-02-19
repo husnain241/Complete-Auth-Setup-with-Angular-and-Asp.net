@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { User, AuthResponse, LoginRequest, RegisterRequest, ApiError } from '../models/auth.models';
+import { environment } from '../../../environments/environment';
 
 /**
  * Authentication service using Angular Signals for state management.
@@ -12,7 +13,7 @@ import { User, AuthResponse, LoginRequest, RegisterRequest, ApiError } from '../
     providedIn: 'root'
 })
 export class AuthService {
-    private readonly API_URL = 'https://localhost:7146/api/auth';
+    private readonly API_URL = `${environment.apiUrl}/auth`;
     private readonly TOKEN_KEY = 'access_token';
     private readonly USER_KEY = 'current_user';
 

@@ -25,6 +25,8 @@ builder.Services.AddControllers();
 // OpenAPI (.NET 10 built-in - no Swashbuckle)
 builder.Services.AddOpenApi();
 
+
+
 var app = builder.Build();
 
 // Seed default admin user at startup

@@ -1,0 +1,56 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>Admin Dashboard</h1>
+      <p>Welcome back, {{ authService.currentUser()?.firstName || 'Admin' }}</p>
+    </div>
+    <div class="header-badge">
+      <p-tag severity="info" value="Admin" icon="pi pi-shield" />
+    </div>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon users"><i class="pi pi-users"></i></div>
+      <div class="stat-content">
+        <h3>{{ totalUsers() }}</h3>
+        <p>Total Users</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon active"><i class="pi pi-check-circle"></i></div>
+      <div class="stat-content">
+        <h3>0</h3>
+        <p>Active Sessions</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <p-card header="Recent Activity" styleClass="activity-card glass-card">
+      <div class="activity-list">
+        @for (activity of recentActivity; track activity.id) {
+          <div class="activity-item">
+            <div class="activity-icon-wrapper" [ngClass]="activity.type">
+              <i [class]="activity.icon"></i>
+            </div>
+            <div class="activity-details">
+              <p class="activity-message">{{ activity.message }}</p>
+              <span class="activity-time">{{ activity.time }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </p-card>
+
+    <p-card header="Quick Actions" styleClass="actions-card glass-card">
+      <div class="actions-grid">
+        <button pButton class="action-btn" (click)="navigateToUsers()">
+          <i class="pi pi-users text-2xl mb-2"></i>
+          <span>Manage Users</span>
+        </button>
+      </div>
+    </p-card>
+  </div>
+</div>

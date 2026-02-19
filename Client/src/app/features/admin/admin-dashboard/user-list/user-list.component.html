@@ -1,0 +1,35 @@
+<div class="user-management-container">
+  <p-table
+    [value]="users()"
+    [loading]="loading()"
+    [paginator]="true"
+    [rows]="10"
+    styleClass="p-datatable-gridlines p-datatable-sm"
+    responsiveLayout="scroll"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.firstName }}</td>
+        <td>{{ user.lastName }}</td>
+        <td>
+          <p-tag [value]="user.role" [severity]="user.role === 'Admin' ? 'danger' : 'info'"></p-tag>
+        </td>
+        <td>
+          <button pButton icon="pi pi-user-edit" class="p-button-text"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

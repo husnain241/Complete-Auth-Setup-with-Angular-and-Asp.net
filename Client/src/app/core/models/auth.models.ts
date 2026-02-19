@@ -2,7 +2,7 @@
  * User model matching backend UserDto
  */
 export interface User {
-  id: string;
+  id: number;
   email: string;
   firstName: string | null;
   lastName: string | null;

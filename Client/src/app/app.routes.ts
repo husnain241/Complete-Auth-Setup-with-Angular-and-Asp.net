@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { roleGuard, guestGuard } from './core/guards/role.guard';
+import { UserListComponent } from './features/admin/admin-dashboard/user-list/user-list.component';
 
 export const routes: Routes = [
     {
@@ -27,6 +28,7 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['Admin'] }
     },
+    { path: 'admin/users', component: UserListComponent },
     {
         path: '**',
         redirectTo: ''
