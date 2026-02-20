@@ -1,28 +1,434 @@
+// Admin Dashboard Styles
+// Uses global CSS variables for dark/light mode compatibility
+
 .dashboard-container {
   padding: 2rem;
   min-height: calc(100vh - 80px);
-  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-  color: #e2e8f0;
+  animation: dashIn 0.35s ease both;
+}
 
-  .dashboard-header {
+@keyframes dashIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ── Header ──────────────────────────────────────────────────
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  .header-left {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 2.5rem;
-    
-    h1 {
-      font-size: 2.25rem;
-      font-weight: 700;
-      background: linear-gradient(90deg, #fff, #cbd5e1);
-      -webkit-text-fill-color: transparent;
+    gap: 1rem;
+  }
+
+  .header-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 12px;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+
+    i {
+      font-size: 1.2rem;
+      color: #fff;
+    }
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+    background: linear-gradient(90deg, var(--text-main), #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-sub {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin: 0.15rem 0 0;
+
+    strong {
+      color: var(--text-main);
+      -webkit-text-fill-color: var(--text-main);
     }
   }
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
+::ng-deep .admin-badge {
+  font-size: 0.85rem !important;
+  padding: 0.4rem 0.9rem !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
 }
 
+// ── Stats Grid ───────────────────────────────────────────────
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--card-bg);
+  border: var(--card-border);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: inherit;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &--users::before {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), transparent);
+  }
+
+  &--admins::before {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.06), transparent);
+  }
+
+  &--members::before {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.06), transparent);
+  }
+}
+
+.stat-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    font-size: 1.25rem;
+  }
+
+  .stat-card--users & {
+    background: rgba(59, 130, 246, 0.15);
+
+    i {
+      color: #3b82f6;
+    }
+  }
+
+  .stat-card--admins & {
+    background: rgba(239, 68, 68, 0.15);
+
+    i {
+      color: #ef4444;
+    }
+  }
+
+  .stat-card--members & {
+    background: rgba(16, 185, 129, 0.15);
+
+    i {
+      color: #10b981;
+    }
+  }
+}
+
+.stat-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.stat-trend {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-muted);
+
+  i {
+    font-size: 0.75rem;
+  }
+
+  &:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: rgba(59, 130, 246, 0.08);
+  }
+}
+
+// ── Content Grid ─────────────────────────────────────────────
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.glass-card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--glass-shadow);
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 1.25rem;
+  -webkit-text-fill-color: var(--text-main);
+}
+
+// ── Quick Actions ─────────────────────────────────────────────
+.actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.action-tile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+
+  &:hover:not(&--disabled) {
+    border-color: var(--primary-color);
+    background: rgba(59, 130, 246, 0.07);
+    transform: translateX(4px);
+  }
+
+  &--disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+}
+
+.action-tile-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &.users {
+    background: rgba(59, 130, 246, 0.15);
+
+    i {
+      color: #3b82f6;
+    }
+  }
+
+  &.roles {
+    background: rgba(245, 158, 11, 0.15);
+
+    i {
+      color: #f59e0b;
+    }
+  }
+
+  &.logs {
+    background: rgba(16, 185, 129, 0.15);
+
+    i {
+      color: #10b981;
+    }
+  }
+}
+
+.action-tile-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+  display: block;
+  line-height: 1;
+}
+
+.action-tile-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 0.2rem;
+}
+
+// ── Activity List ─────────────────────────────────────────────
+.activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-color);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.activity-dot {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+
+  i {
+    font-size: 0.75rem;
+  }
+
+  &.login {
+    background: rgba(59, 130, 246, 0.15);
+
+    i {
+      color: #3b82f6;
+    }
+  }
+
+  &.register {
+    background: rgba(16, 185, 129, 0.15);
+
+    i {
+      color: #10b981;
+    }
+  }
+
+  &.warning {
+    background: rgba(245, 158, 11, 0.15);
+
+    i {
+      color: #f59e0b;
+    }
+  }
+}
+
+.activity-text {
+  flex: 1;
+
+  p {
+    font-size: 0.875rem;
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  span {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+}
+
+// ── Responsive ───────────────────────────────────────────────
+@media (max-width: 900px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.875rem;
+  }
+
+  .stat-value {
+    font-size: 1.35rem;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    h1 {
+      font-size: 1.35rem;
+    }
+  }
+}

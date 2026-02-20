@@ -1,35 +1,264 @@
-<div class="user-management-container">
-  <p-table
-    [value]="users()"
-    [loading]="loading()"
-    [paginator]="true"
-    [rows]="10"
-    styleClass="p-datatable-gridlines p-datatable-sm"
-    responsiveLayout="scroll"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>ID</th>
-        <th>Email</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Role</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-user>
-      <tr>
-        <td>{{ user.id }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.firstName }}</td>
-        <td>{{ user.lastName }}</td>
-        <td>
-          <p-tag [value]="user.role" [severity]="user.role === 'Admin' ? 'danger' : 'info'"></p-tag>
-        </td>
-        <td>
-          <button pButton icon="pi pi-user-edit" class="p-button-text"></button>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+<p-toast position="top-right" />
+<p-confirmDialog styleClass="confirm-dialog" />
+
+<div class="user-management-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <button class="back-btn" (click)="goBack()" pButton text icon="pi pi-arrow-left" pTooltip="Back to Dashboard"></button>
+      <div>
+        <h1 class="page-title">User Management</h1>
+        <p class="page-subtitle">
+          @if (!loading()) {
+            {{ filteredUsers().length }} of {{ users().length }} users
+          } @else {
+            Loading users...
+          }
+        </p>
+      </div>
+    </div>
+    <button
+      pButton
+      class="add-user-btn"
+      icon="pi pi-user-plus"
+      label="Add User"
+      (click)="openAddModal()"
+      [disabled]="loading()"
+    ></button>
+  </div>
+
+  <!-- Toolbar: Search + Filter -->
+  <div class="toolbar">
+    <div class="search-wrapper">
+      <i class="pi pi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search by name or email…"
+        (input)="onSearch($event)"
+      />
+    </div>
+    <p-select
+      [options]="roleOptions"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Filter by role"
+      styleClass="role-filter"
+      (onChange)="onRoleFilter($event.value)"
+    />
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    @if (loading()) {
+      <!-- Skeleton rows -->
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>#</th><th>User</th><th>Email</th><th>Role</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of skeletonRows; track $index) {
+            <tr class="skeleton-row">
+              <td><p-skeleton width="2rem" height="1rem" /></td>
+              <td><div class="user-cell"><p-skeleton shape="circle" size="2.2rem" /><p-skeleton width="8rem" height="1rem" /></div></td>
+              <td><p-skeleton width="12rem" height="1rem" /></td>
+              <td><p-skeleton width="4rem" height="1.4rem" borderRadius="12px" /></td>
+              <td><p-skeleton width="5rem" height="2rem" borderRadius="6px" /></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else if (filteredUsers().length === 0) {
+      <!-- Empty state -->
+      <div class="empty-state">
+        <i class="pi pi-users"></i>
+        <p>No users found</p>
+        <span>Try adjusting your search or filter, or add a new user.</span>
+      </div>
+    } @else {
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th class="th-sortable" (click)="toggleSort('id')">
+              # <i [class]="sortIcon('id')"></i>
+            </th>
+            <th class="th-sortable" (click)="toggleSort('firstName')">
+              Name <i [class]="sortIcon('firstName')"></i>
+            </th>
+            <th class="th-sortable" (click)="toggleSort('email')">
+              Email <i [class]="sortIcon('email')"></i>
+            </th>
+            <th class="th-sortable" (click)="toggleSort('role')">
+              Role <i [class]="sortIcon('role')"></i>
+            </th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of filteredUsers(); track user.id) {
+            <tr class="user-row">
+              <td class="td-id">{{ user.id }}</td>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar" [attr.data-role]="user.role">
+                    {{ getUserInitials(user) }}
+                  </div>
+                  <div class="user-info">
+                    <span class="user-name">
+                      {{ (user.firstName || '') + ' ' + (user.lastName || '') | titlecase }}
+                      @if (!user.firstName && !user.lastName) { <em class="no-name">—</em> }
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td class="td-email">{{ user.email }}</td>
+              <td>
+                <p-tag
+                  [value]="user.role"
+                  [severity]="getRoleSeverity(user.role)"
+                  styleClass="role-tag"
+                />
+              </td>
+              <td>
+                <div class="action-btns">
+                  <button
+                    pButton
+                    icon="pi pi-pencil"
+                    class="btn-edit"
+                    pTooltip="Edit user"
+                    tooltipPosition="top"
+                    (click)="openEditModal(user)"
+                  ></button>
+                  <button
+                    pButton
+                    icon="pi pi-trash"
+                    class="btn-delete"
+                    pTooltip="Delete user"
+                    tooltipPosition="top"
+                    (click)="confirmDelete(user)"
+                    [loading]="deleting()"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
 </div>
+
+<!-- ── Add User Modal ───────────────────── -->
+<p-dialog
+  header="Add New User"
+  [(visible)]="showAddModal"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="user-modal"
+  [style]="{ width: '480px' }"
+>
+  <form [formGroup]="addForm" (ngSubmit)="submitAdd()" class="modal-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" pInputText formControlName="firstName" placeholder="John" />
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" pInputText formControlName="lastName" placeholder="Doe" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Email <span class="required">*</span></label>
+      <input type="email" pInputText formControlName="email" placeholder="john@example.com" />
+      @if (hasError(addForm, 'email', 'required')) {
+        <span class="field-error">Email is required.</span>
+      }
+      @if (hasError(addForm, 'email', 'email')) {
+        <span class="field-error">Please enter a valid email.</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Password <span class="required">*</span></label>
+      <input type="password" pInputText formControlName="password" placeholder="Min. 8 characters" />
+      @if (hasError(addForm, 'password', 'required')) {
+        <span class="field-error">Password is required.</span>
+      }
+      @if (hasError(addForm, 'password', 'minlength')) {
+        <span class="field-error">Password must be at least 8 characters.</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Role <span class="required">*</span></label>
+      <p-select
+        [options]="roleFormOptions"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="role"
+        styleClass="w-full"
+      />
+    </div>
+
+    <div class="modal-actions">
+      <button pButton type="button" label="Cancel" class="p-button-outlined" (click)="showAddModal.set(false)" [disabled]="saving()"></button>
+      <button pButton type="submit" label="Create User" icon="pi pi-check" [loading]="saving()"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- ── Edit User Modal ──────────────────── -->
+<p-dialog
+  header="Edit User"
+  [(visible)]="showEditModal"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="user-modal"
+  [style]="{ width: '420px' }"
+>
+  @if (selectedUser(); as user) {
+    <div class="modal-user-badge">
+      <div class="user-avatar lg" [attr.data-role]="user.role">{{ getUserInitials(user) }}</div>
+      <div>
+        <p class="modal-email">{{ user.email }}</p>
+        <p class="modal-id">ID: {{ user.id }}</p>
+      </div>
+    </div>
+  }
+
+  <form [formGroup]="editForm" (ngSubmit)="submitEdit()" class="modal-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" pInputText formControlName="firstName" placeholder="First name" />
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" pInputText formControlName="lastName" placeholder="Last name" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Role <span class="required">*</span></label>
+      <p-select
+        [options]="roleFormOptions"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="role"
+        styleClass="w-full"
+      />
+    </div>
+
+    <div class="modal-actions">
+      <button pButton type="button" label="Cancel" class="p-button-outlined" (click)="showEditModal.set(false)" [disabled]="saving()"></button>
+      <button pButton type="submit" label="Save Changes" icon="pi pi-save" [loading]="saving()"></button>
+    </div>
+  </form>
+</p-dialog>

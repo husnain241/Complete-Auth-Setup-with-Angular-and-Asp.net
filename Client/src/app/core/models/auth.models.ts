@@ -37,6 +37,26 @@ export interface RegisterRequest {
 }
 
 /**
+ * Admin: Create user payload
+ */
+export interface CreateUserRequest {
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  role: string;
+}
+
+/**
+ * Admin: Update user payload
+ */
+export interface UpdateUserRequest {
+  firstName?: string;
+  lastName?: string;
+  role: string;
+}
+
+/**
  * API error response (ProblemDetails format)
  */
 export interface ApiError {

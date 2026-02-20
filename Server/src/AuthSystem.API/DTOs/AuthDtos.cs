@@ -53,3 +53,39 @@ public record UserDto(
     string? LastName,
     string Role
 );
+
+/// <summary>
+/// Create user request DTO (admin only).
+/// </summary>
+public record CreateUserDto(
+    [Required]
+    [EmailAddress]
+    string Email,
+
+    [Required]
+    [MinLength(8)]
+    string Password,
+
+    [MaxLength(100)]
+    string? FirstName,
+
+    [MaxLength(100)]
+    string? LastName,
+
+    [Required]
+    string Role
+);
+
+/// <summary>
+/// Update user request DTO (admin only) — updates profile details and role.
+/// </summary>
+public record UpdateUserDto(
+    [MaxLength(100)]
+    string? FirstName,
+
+    [MaxLength(100)]
+    string? LastName,
+
+    [Required]
+    string Role
+);

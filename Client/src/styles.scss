@@ -1,40 +1,48 @@
 /* Global Styles */
 
 :root {
-  /* Brand Palette: Tech/Mobile Shop Theme */
+  /* Brand Palette */
   --primary-color: #3b82f6;
-  /* Electric Blue */
   --primary-hover: #2563eb;
   --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
 
   --secondary-color: #10b981;
-  /* Success/Stock Green */
   --accent-color: #f59e0b;
-  /* Warning/Sale Orange */
 
-  /* Backgrounds */
+  /* Dark Mode Backgrounds (default) */
   --site-bg: #030712;
-  /* Deepest Black/Blue */
   --site-bg-gradient: radial-gradient(circle at 50% 0%, #172554 0%, #030712 60%);
-
   --card-bg: rgba(17, 24, 39, 0.7);
-  /* Dark Gray/Blue with opacity */
   --card-border: 1px solid rgba(255, 255, 255, 0.08);
   --header-bg: rgba(3, 7, 18, 0.8);
 
   /* Text */
   --text-main: #f9fafb;
-  /* White-ish */
   --text-muted: #9ca3af;
-  /* Gray */
   --text-highlight: #60a5fa;
-  /* Light Blue */
 
   /* Borders & Effects */
   --border-color: rgba(255, 255, 255, 0.1);
   --focus-glow: 0 0 0 3px rgba(59, 130, 246, 0.3);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   --section-spacing: 6rem;
+}
+
+/* ── Light Mode ─────────────────────────────────────────────── */
+[data-theme='light'] {
+  --site-bg: #f1f5f9;
+  --site-bg-gradient: radial-gradient(circle at 50% 0%, #dbeafe 0%, #f1f5f9 60%);
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-border: 1px solid rgba(0, 0, 0, 0.08);
+  --header-bg: rgba(255, 255, 255, 0.9);
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-highlight: #2563eb;
+
+  --border-color: rgba(0, 0, 0, 0.1);
+  --focus-glow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 * {

@@ -1,56 +1,89 @@
 <div class="dashboard-container">
+
+  <!-- Header -->
   <header class="dashboard-header">
-    <div class="header-content">
-      <h1>Admin Dashboard</h1>
-      <p>Welcome back, {{ authService.currentUser()?.firstName || 'Admin' }}</p>
+    <div class="header-left">
+      <div class="header-icon"><i class="pi pi-th-large"></i></div>
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p class="header-sub">Welcome back, <strong>{{ authService.currentUser()?.firstName || 'Admin' }}</strong></p>
+      </div>
     </div>
-    <div class="header-badge">
-      <p-tag severity="info" value="Admin" icon="pi pi-shield" />
-    </div>
+    <p-tag severity="info" value="Admin" icon="pi pi-shield" styleClass="admin-badge" />
   </header>
 
+  <!-- Stats Grid -->
   <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon users"><i class="pi pi-users"></i></div>
-      <div class="stat-content">
-        <h3>{{ totalUsers() }}</h3>
-        <p>Total Users</p>
+    <div class="stat-card stat-card--users">
+      <div class="stat-icon"><i class="pi pi-users"></i></div>
+      <div class="stat-body">
+        <span class="stat-value">{{ loadingStats() ? '─' : totalUsers() }}</span>
+        <span class="stat-label">Total Users</span>
+      </div>
+      <div class="stat-trend" (click)="navigateToUsers()" title="Manage users">
+        <i class="pi pi-arrow-up-right"></i>
       </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon active"><i class="pi pi-check-circle"></i></div>
-      <div class="stat-content">
-        <h3>0</h3>
-        <p>Active Sessions</p>
+    <div class="stat-card stat-card--admins">
+      <div class="stat-icon"><i class="pi pi-shield"></i></div>
+      <div class="stat-body">
+        <span class="stat-value">{{ loadingStats() ? '─' : adminCount() }}</span>
+        <span class="stat-label">Administrators</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card--members">
+      <div class="stat-icon"><i class="pi pi-user"></i></div>
+      <div class="stat-body">
+        <span class="stat-value">{{ loadingStats() ? '─' : memberCount() }}</span>
+        <span class="stat-label">Members</span>
       </div>
     </div>
   </div>
 
+  <!-- Content Grid -->
   <div class="content-grid">
-    <p-card header="Recent Activity" styleClass="activity-card glass-card">
-      <div class="activity-list">
-        @for (activity of recentActivity; track activity.id) {
-          <div class="activity-item">
-            <div class="activity-icon-wrapper" [ngClass]="activity.type">
-              <i [class]="activity.icon"></i>
-            </div>
-            <div class="activity-details">
-              <p class="activity-message">{{ activity.message }}</p>
-              <span class="activity-time">{{ activity.time }}</span>
-            </div>
-          </div>
-        }
-      </div>
-    </p-card>
 
-    <p-card header="Quick Actions" styleClass="actions-card glass-card">
+    <!-- Quick Actions -->
+    <div class="glass-card quick-actions-card">
+      <h2 class="card-title">Quick Actions</h2>
       <div class="actions-grid">
-        <button pButton class="action-btn" (click)="navigateToUsers()">
-          <i class="pi pi-users text-2xl mb-2"></i>
-          <span>Manage Users</span>
+        <button class="action-tile" (click)="navigateToUsers()">
+          <div class="action-tile-icon users"><i class="pi pi-users"></i></div>
+          <span class="action-tile-label">Manage Users</span>
+          <span class="action-tile-desc">View, add, edit & delete</span>
         </button>
+        <div class="action-tile action-tile--disabled">
+          <div class="action-tile-icon roles"><i class="pi pi-key"></i></div>
+          <span class="action-tile-label">Roles &amp; Permissions</span>
+          <span class="action-tile-desc">Coming soon</span>
+        </div>
+        <div class="action-tile action-tile--disabled">
+          <div class="action-tile-icon logs"><i class="pi pi-list"></i></div>
+          <span class="action-tile-label">Audit Log</span>
+          <span class="action-tile-desc">Coming soon</span>
+        </div>
       </div>
-    </p-card>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="glass-card activity-card">
+      <h2 class="card-title">Recent Activity</h2>
+      <ul class="activity-list">
+        @for (item of recentActivity; track item.id) {
+        <li class="activity-item">
+          <div class="activity-dot" [ngClass]="item.type">
+            <i [class]="item.icon"></i>
+          </div>
+          <div class="activity-text">
+            <p>{{ item.message }}</p>
+            <span>{{ item.time }}</span>
+          </div>
+        </li>
+        }
+      </ul>
+    </div>
+
   </div>
 </div>

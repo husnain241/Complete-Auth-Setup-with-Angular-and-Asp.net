@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { roleGuard, guestGuard } from './core/guards/role.guard';
-import { UserListComponent } from './features/admin/admin-dashboard/user-list/user-list.component';
 
 export const routes: Routes = [
     {
@@ -24,11 +23,19 @@ export const routes: Routes = [
     },
     {
         path: 'admin',
-        loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
         canActivate: [roleGuard],
-        data: { roles: ['Admin'] }
+        data: { roles: ['Admin'] },
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
+            },
+            {
+                path: 'users',
+                loadComponent: () => import('./features/admin/admin-dashboard/user-list/user-list.component').then(m => m.UserListComponent),
+            }
+        ]
     },
-    { path: 'admin/users', component: UserListComponent },
     {
         path: '**',
         redirectTo: ''
