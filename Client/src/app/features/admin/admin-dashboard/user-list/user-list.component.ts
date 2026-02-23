@@ -19,6 +19,7 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 
 import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../../core/models/auth.models';
+import { SignalrService } from '../../../../core/services/signalr';
 
 type SortField = 'id' | 'email' | 'firstName' | 'lastName' | 'role';
 type SortOrder = 'asc' | 'desc';
@@ -50,7 +51,9 @@ export class UserListComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private messageService = inject(MessageService);
-  private confirmService = inject(ConfirmationService);
+  private confirmService = inject(ConfirmationService);  
+  private signalRService = inject(SignalrService);
+  
 
   // ── State ─────────────────────────────────────────────────
   users = signal<User[]>([]);
@@ -123,7 +126,16 @@ export class UserListComponent implements OnInit {
   });
 
   // ── Lifecycle ─────────────────────────────────────────────
-  ngOnInit() { this.loadUsers(); }
+  ngOnInit() { this.loadUsers();
+    // Naya Listener: Online/Offline status ke liye
+   // Naya Listener: Online/Offline status ke liye
+    // user-list.component.ts ke ngOnInit mein
+this.signalRService.addListener('UserStatusChanged', (userId: any, isOnline: boolean) => {
+    this.users.update(allUsers => 
+        allUsers.map(u => u.id === Number(userId) ? { ...u, isOnline } : u)
+    );
+});
+   }
 
   loadUsers() {
     this.loading.set(true);

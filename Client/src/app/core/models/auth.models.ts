@@ -7,6 +7,7 @@ export interface User {
   firstName: string | null;
   lastName: string | null;
   role: string;
+  isOnline?: boolean; // Real-time online status ke liye (optional)
 }
 
 /**

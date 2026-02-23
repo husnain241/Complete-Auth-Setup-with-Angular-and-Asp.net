@@ -2,11 +2,17 @@
 <p-confirmDialog styleClass="confirm-dialog" />
 
 <div class="user-management-page">
-
   <!-- Page Header -->
   <div class="page-header">
     <div class="page-header-left">
-      <button class="back-btn" (click)="goBack()" pButton text icon="pi pi-arrow-left" pTooltip="Back to Dashboard"></button>
+      <button
+        class="back-btn"
+        (click)="goBack()"
+        pButton
+        text
+        icon="pi pi-arrow-left"
+        pTooltip="Back to Dashboard"
+      ></button>
       <div>
         <h1 class="page-title">User Management</h1>
         <p class="page-subtitle">
@@ -56,14 +62,25 @@
       <table class="user-table">
         <thead>
           <tr>
-            <th>#</th><th>User</th><th>Email</th><th>Role</th><th>Actions</th>
+            <th>#</th>
+            <th>User</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           @for (row of skeletonRows; track $index) {
             <tr class="skeleton-row">
               <td><p-skeleton width="2rem" height="1rem" /></td>
-              <td><div class="user-cell"><p-skeleton shape="circle" size="2.2rem" /><p-skeleton width="8rem" height="1rem" /></div></td>
+              <td>
+                <div class="user-cell">
+                  <p-skeleton shape="circle" size="2.2rem" /><p-skeleton
+                    width="8rem"
+                    height="1rem"
+                  />
+                </div>
+              </td>
               <td><p-skeleton width="12rem" height="1rem" /></td>
               <td><p-skeleton width="4rem" height="1.4rem" borderRadius="12px" /></td>
               <td><p-skeleton width="5rem" height="2rem" borderRadius="6px" /></td>
@@ -105,12 +122,10 @@
                 <div class="user-cell">
                   <div class="user-avatar" [attr.data-role]="user.role">
                     {{ getUserInitials(user) }}
-                  </div>
-                  <div class="user-info">
-                    <span class="user-name">
-                      {{ (user.firstName || '') + ' ' + (user.lastName || '') | titlecase }}
-                      @if (!user.firstName && !user.lastName) { <em class="no-name">—</em> }
-                    </span>
+
+                    @if (user.isOnline) {
+                      <span class="online-indicator" title="Online"></span>
+                    }
                   </div>
                 </div>
               </td>
@@ -186,7 +201,12 @@
 
     <div class="form-group">
       <label>Password <span class="required">*</span></label>
-      <input type="password" pInputText formControlName="password" placeholder="Min. 8 characters" />
+      <input
+        type="password"
+        pInputText
+        formControlName="password"
+        placeholder="Min. 8 characters"
+      />
       @if (hasError(addForm, 'password', 'required')) {
         <span class="field-error">Password is required.</span>
       }
@@ -207,8 +227,21 @@
     </div>
 
     <div class="modal-actions">
-      <button pButton type="button" label="Cancel" class="p-button-outlined" (click)="showAddModal.set(false)" [disabled]="saving()"></button>
-      <button pButton type="submit" label="Create User" icon="pi pi-check" [loading]="saving()"></button>
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        class="p-button-outlined"
+        (click)="showAddModal.set(false)"
+        [disabled]="saving()"
+      ></button>
+      <button
+        pButton
+        type="submit"
+        label="Create User"
+        icon="pi pi-check"
+        [loading]="saving()"
+      ></button>
     </div>
   </form>
 </p-dialog>
@@ -228,6 +261,19 @@
       <div class="user-avatar lg" [attr.data-role]="user.role">{{ getUserInitials(user) }}</div>
       <div>
         <p class="modal-email">{{ user.email }}</p>
+        <span
+          *ngIf="user.isOnline"
+          style="
+            height: 10px;
+            width: 10px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 5px;
+          "
+          title="Online"
+        >
+        </span>
         <p class="modal-id">ID: {{ user.id }}</p>
       </div>
     </div>
@@ -257,8 +303,21 @@
     </div>
 
     <div class="modal-actions">
-      <button pButton type="button" label="Cancel" class="p-button-outlined" (click)="showEditModal.set(false)" [disabled]="saving()"></button>
-      <button pButton type="submit" label="Save Changes" icon="pi pi-save" [loading]="saving()"></button>
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        class="p-button-outlined"
+        (click)="showEditModal.set(false)"
+        [disabled]="saving()"
+      ></button>
+      <button
+        pButton
+        type="submit"
+        label="Save Changes"
+        icon="pi pi-save"
+        [loading]="saving()"
+      ></button>
     </div>
   </form>
 </p-dialog>
