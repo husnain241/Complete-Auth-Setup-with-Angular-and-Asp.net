@@ -1,4 +1,5 @@
 using AuthSystem.API.Extensions;
+using AuthSystem.API.Hubs;
 using AuthSystem.API.Middleware;
 using AuthSystem.Infrastructure;
 using AuthSystem.Infrastructure.Identity;
@@ -25,7 +26,7 @@ builder.Services.AddControllers();
 // OpenAPI (.NET 10 built-in - no Swashbuckle)
 builder.Services.AddOpenApi();
 
-
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -52,5 +53,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.Run();
+app.MapHub<NotificationHub>("/hubs/notifications");
+app.Run();  

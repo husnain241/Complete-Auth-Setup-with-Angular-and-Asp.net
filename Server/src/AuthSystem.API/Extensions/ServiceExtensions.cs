@@ -48,7 +48,21 @@ public static class ServiceExtensions
                         context.Response.Headers["Token-Expired"] = "true";
                     }
                     return Task.CompletedTask;
-                }
+                },
+                // YEH WALA HISSA ADD KAREIN
+        OnMessageReceived = context =>
+        {
+            // SignalR token ko "access_token" query parameter mein bhejta hai
+            var accessToken = context.Request.Query["access_token"];
+
+            // Agar request Hub ke raste par ja rahi hai toh token utha lo
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
             };
         });
         
@@ -56,7 +70,7 @@ public static class ServiceExtensions
     }
     
     /// <summary>
-    /// Adds CORS policy for the Angular frontend.
+    /// Adds CORS policy for the Angular frontend.  
     /// </summary>
     public static IServiceCollection AddCorsPolicy(
         this IServiceCollection services, 
@@ -68,12 +82,12 @@ public static class ServiceExtensions
         services.AddCors(options =>
         {
             options.AddPolicy("AllowAngularApp", policy =>
-            {
-                policy.WithOrigins(allowedOrigins)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials(); // Required for cookies
-            });
+        {
+            policy.WithOrigins(allowedOrigins) // Yahan JSON wala data apply hoga
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials(); // SignalR ke liye must hai
+        });
         });
         
         return services;

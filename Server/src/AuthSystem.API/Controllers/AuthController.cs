@@ -1,14 +1,16 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using AuthSystem.API.DTOs;
+using AuthSystem.API.Hubs;
 using AuthSystem.Core.Common;
 using AuthSystem.Core.Entities;
 using AuthSystem.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace AuthSystem.API.Controllers;
 
@@ -22,15 +24,19 @@ public class AuthController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly IConfiguration _configuration;
     private readonly ILogger<AuthController> _logger;
-    
+    private readonly IHubContext<NotificationHub> _hubContext;
+
     public AuthController(
         ApplicationDbContext context,
         IConfiguration configuration,
-        ILogger<AuthController> logger)
+        ILogger<AuthController> logger,
+        IHubContext<NotificationHub> hubContext
+        )
     {
         _context = context;
         _configuration = configuration;
         _logger = logger;
+        _hubContext = hubContext;
     }
     
     /// <summary>
@@ -99,7 +105,16 @@ public class AuthController : ControllerBase
         var expiry = DateTime.UtcNow.AddMinutes(AuthConstants.AccessTokenExpiryMinutes);
         
         _logger.LogInformation("User registered: {Email}", request.Email);
-        
+
+        // Tamam connected clients (Admins) ko notify karein
+        // Register method ke andar jahan SignalR call hai:
+        await _hubContext.Clients.All.SendAsync("UpdateUserStats", new
+        {
+            message = $"New user {user.FirstName} registered",
+            email = user.Email,
+            type = "register",
+            time = "Just now"
+        });
         return CreatedAtAction(nameof(Register), new AuthResponseDto(
             token,
             expiry,
@@ -158,7 +173,10 @@ public class AuthController : ControllerBase
         
         var claims = new List<Claim>
         {
-new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            // Yeh line SignalR presence tracking ke liye sab se zaroori hai
+new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
 new(JwtRegisteredClaimNames.Email, user.Email),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new("firstName", user.FirstName ?? ""),
