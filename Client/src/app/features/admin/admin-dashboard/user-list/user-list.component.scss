@@ -467,6 +467,17 @@
     border-radius: 50%;
     box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
   }
+  
+  .offline-indicator {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background-color: #9ca3af;
+    border: 2px solid #fff; /* Border se dot standout karega */
+    border-radius: 50%;
+  }
 }
 
 /* Modal mein text wala badge */

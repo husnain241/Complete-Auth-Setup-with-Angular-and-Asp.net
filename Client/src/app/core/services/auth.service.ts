@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { User, AuthResponse, LoginRequest, RegisterRequest, ApiError } from '../models/auth.models';
 import { environment } from '../../../environments/environment';
+import { SignalrService } from './signalr';
 
 /**
  * Authentication service using Angular Signals for state management.
@@ -37,7 +38,8 @@ export class AuthService {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly signalRService: SignalrService
     ) {
         // Restore session from localStorage on initialization
         this.restoreSession();
@@ -116,6 +118,8 @@ export class AuthService {
                 const user: User = JSON.parse(userJson);
                 this._accessToken.set(token);
                 this._currentUser.set(user);
+                // Agar session restore ho rahi hai toh SignalR bhi reconnect karein
+                this.signalRService.startConnection();
             }
         } catch {
             // Corrupted data — clear everything
@@ -136,6 +140,9 @@ export class AuthService {
         // Persist to localStorage
         localStorage.setItem(this.TOKEN_KEY, response.accessToken);
         localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+
+        // Token store hone ke baad SignalR connection start karein
+        this.signalRService.startConnection();
     }
 
     /**
@@ -163,6 +170,8 @@ export class AuthService {
      * Clear all authentication state and localStorage.
      */
     clearAuth(): void {
+        // Pehle SignalR disconnect karein (token clear hone se pehle)
+        this.signalRService.stopConnection();
         this._currentUser.set(null);
         this._accessToken.set(null);
         this._isLoading.set(false);

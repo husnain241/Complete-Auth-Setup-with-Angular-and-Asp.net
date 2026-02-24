@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 
 namespace AuthSystem.API.Hubs
 {
-    [Authorize]
     public class NotificationHub : Hub
     {
         // UserID aur ConnectionID ko track karne ke liye
@@ -14,6 +13,7 @@ namespace AuthSystem.API.Hubs
         public override async Task OnConnectedAsync()
         {
             var userId = Context.UserIdentifier; // JWT Token se User ID uthata hai
+
             if (!string.IsNullOrEmpty(userId))
             {
                 OnlineUsers.TryAdd(userId, Context.ConnectionId);

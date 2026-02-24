@@ -127,9 +127,7 @@ export class UserListComponent implements OnInit {
 
   // ── Lifecycle ─────────────────────────────────────────────
   ngOnInit() { this.loadUsers();
-    // Naya Listener: Online/Offline status ke liye
-   // Naya Listener: Online/Offline status ke liye
-    // user-list.component.ts ke ngOnInit mein
+   
 this.signalRService.addListener('UserStatusChanged', (userId: any, isOnline: boolean) => {
     this.users.update(allUsers => 
         allUsers.map(u => u.id === Number(userId) ? { ...u, isOnline } : u)

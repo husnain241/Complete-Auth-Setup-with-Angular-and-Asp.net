@@ -173,7 +173,6 @@ public class AuthController : ControllerBase
         
         var claims = new List<Claim>
         {
-            // Yeh line SignalR presence tracking ke liye sab se zaroori hai
 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),

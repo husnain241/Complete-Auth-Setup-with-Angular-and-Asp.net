@@ -10,6 +10,7 @@ import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SignalrService } from '../../../core/services/signalr';
 
 /**
  * Login component with reactive form validation and modern UI.
@@ -231,6 +232,7 @@ export class LoginComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   public readonly authService = inject(AuthService);
+  private readonly signalrService = inject(SignalrService);
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -246,6 +248,8 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
+          // 2. Navigation se pehle Connection start karein
+          this.signalrService.startConnection();
           // Check for redirect URL from query params first
           const returnUrl = this.route.snapshot.queryParams['returnUrl'];
 
