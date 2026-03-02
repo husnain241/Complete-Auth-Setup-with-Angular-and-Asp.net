@@ -29,7 +29,7 @@ namespace AuthSystem.API.Hubs
             if (!string.IsNullOrEmpty(userId))
             {
                 OnlineUsers.TryRemove(userId, out _);
-                // Sab ko batayein ke ye user offline ho gaya hai
+    
                 await Clients.All.SendAsync("UserStatusChanged", userId, false);
             }
             await base.OnDisconnectedAsync(exception);
