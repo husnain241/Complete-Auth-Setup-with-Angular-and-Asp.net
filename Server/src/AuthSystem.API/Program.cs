@@ -6,7 +6,7 @@ using AuthSystem.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// Builder Serices.....
 
 // Infrastructure layer (DbContext)
 builder.Services.AddInfrastructure(builder.Configuration);

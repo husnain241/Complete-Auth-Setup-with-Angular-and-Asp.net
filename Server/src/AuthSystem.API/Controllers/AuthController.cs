@@ -191,6 +191,7 @@ new(JwtRegisteredClaimNames.Email, user.Email),
             signingCredentials: credentials
         );
         
+        
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
