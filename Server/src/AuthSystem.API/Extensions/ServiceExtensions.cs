@@ -4,9 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AuthSystem.API.Extensions;
 
-/// <summary>
-/// Service collection extensions for API layer.
-/// </summary>
+
 public static class ServiceExtensions
 {
     /// <summary>
