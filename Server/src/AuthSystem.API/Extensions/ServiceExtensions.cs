@@ -47,7 +47,7 @@ public static class ServiceExtensions
                     }
                     return Task.CompletedTask;
                 },
-                // YEH WALA HISSA ADD KAREIN
+               
         OnMessageReceived = context =>
         {
             // SignalR token ko "access_token" query parameter mein bhejta hai
