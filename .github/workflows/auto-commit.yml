@@ -1,6 +1,7 @@
 name: Daily Auto Commit
 
 on:
+ workflow_dispatch:
   schedule:
     - cron: '0 15 * * *'   # 8 PM Pakistan
     - cron: '0 16 * * *'   # 9 PM Pakistan
