@@ -1,0 +1,20 @@
+name: Daily Auto Commit
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # Roz 11 PM Pakistan time
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Daily Commit
+        run: |
+          git config user.email "alihusnaintcf970@email.com"
+          git config user.name "husnain241"
+          echo "- $(date '+%Y-%m-%d %H:%M:%S') — daily update" >> log.md
+          git add .
+          git commit -m "controller logic update $(date '+%Y-%m-%d')"
+          git push
