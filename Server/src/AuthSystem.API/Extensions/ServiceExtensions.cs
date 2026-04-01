@@ -4,9 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AuthSystem.API.Extensions;
 
-/// <summary>
-/// Service collection extensions for API layer.
-/// </summary>
+
 public static class ServiceExtensions
 {
     /// <summary>
@@ -49,7 +47,7 @@ public static class ServiceExtensions
                     }
                     return Task.CompletedTask;
                 },
-                // YEH WALA HISSA ADD KAREIN
+               
         OnMessageReceived = context =>
         {
             // SignalR token ko "access_token" query parameter mein bhejta hai

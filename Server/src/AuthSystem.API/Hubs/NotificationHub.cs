@@ -6,7 +6,6 @@ namespace AuthSystem.API.Hubs
 {
     public class NotificationHub : Hub
     {
-        // UserID aur ConnectionID ko track karne ke liye
         private static readonly ConcurrentDictionary<string, string> OnlineUsers = new();
 
 
@@ -33,6 +32,7 @@ namespace AuthSystem.API.Hubs
                 await Clients.All.SendAsync("UserStatusChanged", userId, false);
             }
             await base.OnDisconnectedAsync(exception);
+            
         }
     }
 }
