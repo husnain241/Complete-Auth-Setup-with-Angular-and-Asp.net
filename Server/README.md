@@ -33,6 +33,8 @@ src/
 │   │   └── IUserService.cs
 │   ├── Models/
 │   │   └── UserModels.cs
+		└── UserModels.cs
+		
 │   └── Services/
 │       └── UserService.cs
 ├── AuthSystem.Infrastructure/
