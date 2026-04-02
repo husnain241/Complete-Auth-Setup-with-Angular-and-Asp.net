@@ -33,7 +33,9 @@ jobs:
           elif [ "$HOUR" = "19" ]; then
             MSG="chore: optimize performance"
           fi
-          
+           if [ -z "$MSG" ]; then
+            MSG="chore: daily maintenance"
+          fi
           echo "- $(date '+%Y-%m-%d %H:%M:%S') — $MSG" >> log.md
           git add .
           git commit -m "$MSG"
