@@ -1,0 +1,40 @@
+name: Daily Auto Commit
+
+on:
+ workflow_dispatch:
+  schedule:
+    - cron: '0 15 * * *'   # 8 PM Pakistan
+    - cron: '0 16 * * *'   # 9 PM Pakistan
+    - cron: '0 17 * * *'   # 10 PM Pakistan
+    - cron: '0 18 * * *'   # 11 PM Pakistan
+    - cron: '0 19 * * *'   # 12 AM Pakistan
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Daily Commit
+        run: |
+          git config user.email "alihusnaintcf970@gmail.com"
+          git config user.name "husnain241"
+          
+          HOUR=$(date '+%H')
+          
+          if [ "$HOUR" = "15" ]; then
+            MSG="feat: improve UI components"
+          elif [ "$HOUR" = "16" ]; then
+            MSG="fix: resolve minor bugs"
+          elif [ "$HOUR" = "17" ]; then
+            MSG="refactor: clean up code structure"
+          elif [ "$HOUR" = "18" ]; then
+            MSG="docs: update documentation"
+          elif [ "$HOUR" = "19" ]; then
+            MSG="chore: optimize performance"
+          fi
+          
+          echo "- $(date '+%Y-%m-%d %H:%M:%S') — $MSG" >> log.md
+          git add .
+          git commit -m "$MSG"
+          git push
