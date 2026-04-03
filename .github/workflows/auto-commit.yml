@@ -28,15 +28,15 @@ jobs:
 
           HOUR=$(date '+%H')
 
-          if [ "$HOUR" = "15" ]; then
+          if [ "$HOUR" = "04" ]; then
             MSG="feat: improve UI components"
-          elif [ "$HOUR" = "16" ]; then
+          elif [ "$HOUR" = "06" ]; then
             MSG="fix: resolve minor bugs"
-          elif [ "$HOUR" = "17" ]; then
+          elif [ "$HOUR" = "08" ]; then
             MSG="refactor: clean up code structure"
-          elif [ "$HOUR" = "18" ]; then
+          elif [ "$HOUR" = "09" ]; then
             MSG="docs: update documentation"
-          elif [ "$HOUR" = "19" ]; then
+          elif [ "$HOUR" = "11" ]; then
             MSG="chore: optimize performance"
           else
             MSG="chore: daily maintenance"
