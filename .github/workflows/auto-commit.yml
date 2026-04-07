@@ -14,12 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: write
     steps:
       - uses: actions/checkout@v4
-
-      - name: Keep Alive
-        uses: gautamkrishnar/keepalive-workflow@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Daily Commit
         run: |
