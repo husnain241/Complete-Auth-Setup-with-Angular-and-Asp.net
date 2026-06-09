@@ -368,3 +368,4 @@
 - 2026-06-08 13:05:39 — chore: daily maintenance
 - 2026-06-08 14:48:15 — chore: daily maintenance
 - 2026-06-09 07:35:17 — chore: daily maintenance
+- 2026-06-09 09:46:18 — docs: update documentation
