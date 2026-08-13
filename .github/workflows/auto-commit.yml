@@ -1,5 +1,4 @@
 name: Daily Auto Commit
-
 on:
   workflow_dispatch:
   schedule:
@@ -19,28 +18,39 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Daily Commit
+      - name: Random Commits
         run: |
           git config user.email "alihusnaintcf970@gmail.com"
           git config user.name "husnain241"
 
-          HOUR=$(date '+%H')
-
-          if [ "$HOUR" = "04" ]; then
-            MSG="feat: improve UI components"
-          elif [ "$HOUR" = "06" ]; then
-            MSG="fix: resolve minor bugs"
-          elif [ "$HOUR" = "08" ]; then
-            MSG="refactor: clean up code structure"
-          elif [ "$HOUR" = "09" ]; then
-            MSG="docs: update documentation"
-          elif [ "$HOUR" = "11" ]; then
-            MSG="chore: optimize performance"
-          else
-            MSG="chore: daily maintenance"
+          DAY=$(date '+%A')
+          if [ "$DAY" = "Friday" ]; then
+            echo "Friday - skipping commits"
+            exit 0
           fi
 
-          echo "- $(date '+%Y-%m-%d %H:%M:%S') — $MSG" >> log.md
-          git add .
-          git commit -m "$MSG"
+          MESSAGES=(
+            "feat: improve UI components"
+            "fix: resolve minor bugs"
+            "refactor: clean up code structure"
+            "docs: update documentation"
+            "chore: optimize performance"
+            "style: format code"
+            "test: add unit tests"
+            "perf: improve load time"
+            "chore: daily maintenance"
+            "fix: edge case handling"
+          )
+
+          COUNT=$(( (RANDOM % 8) + 1 ))
+          echo "Making $COUNT commits this run"
+
+          for i in $(seq 1 $COUNT); do
+            MSG=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
+            echo "- $(date '+%Y-%m-%d %H:%M:%S') — $MSG" >> log.md
+            git add .
+            git commit -m "$MSG"
+            sleep $(( (RANDOM % 20) + 5 ))
+          done
+
           git push
