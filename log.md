@@ -901,3 +901,4 @@
 - 2026-08-24 09:44:55 — style: format code
 - 2026-08-24 09:45:03 — perf: improve load time
 - 2026-08-24 11:26:40 — fix: edge case handling
+- 2026-08-24 11:27:03 — docs: update documentation
