@@ -895,3 +895,4 @@
 - 2026-08-24 08:41:47 — docs: update documentation
 - 2026-08-24 08:42:10 — style: format code
 - 2026-08-24 08:42:24 — chore: optimize performance
+- 2026-08-24 09:44:15 — fix: edge case handling
