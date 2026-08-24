@@ -883,3 +883,4 @@
 - 2026-08-23 11:19:27 — docs: update documentation
 - 2026-08-23 11:19:47 — fix: resolve minor bugs
 - 2026-08-23 11:19:53 — fix: resolve minor bugs
+- 2026-08-24 04:32:52 — refactor: clean up code structure
