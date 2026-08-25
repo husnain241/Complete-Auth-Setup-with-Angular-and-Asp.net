@@ -16,7 +16,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Random Commits
+      - name: Random Commit
         run: |
           git config user.email "alihusnaintcf970@gmail.com"
           git config user.name "husnain241"
@@ -25,6 +25,16 @@ jobs:
           if [ "$DAY" = "Friday" ]; then
             echo "Friday - skipping commits"
             exit 0
+          fi
+
+          HOUR=$(date -u '+%H')
+
+          # 4 PM (last run) sirf 50% chance pe commit karega -> total 2 ya 3
+          if [ "$HOUR" = "11" ]; then
+            if [ $((RANDOM % 2)) -eq 0 ]; then
+              echo "Skipping this run (randomly)"
+              exit 0
+            fi
           fi
 
           MESSAGES=(
@@ -36,19 +46,10 @@ jobs:
             "style: format code"
             "test: add unit tests"
             "perf: improve load time"
-            "chore: daily maintenance"
-            "fix: edge case handling"
           )
 
-          COUNT=$(( (RANDOM % 8) + 1 ))
-          echo "Making $COUNT commits this run"
-
-          for i in $(seq 1 $COUNT); do
-            MSG=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
-            echo "- $(date '+%Y-%m-%d %H:%M:%S') — $MSG" >> log.md
-            git add .
-            git commit -m "$MSG"
-            sleep $(( (RANDOM % 20) + 5 ))
-          done
-
+          MSG=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
+          echo "- $(date '+%Y-%m-%d %H:%M:%S') — $MSG" >> log.md
+          git add .
+          git commit -m "$MSG"
           git push
