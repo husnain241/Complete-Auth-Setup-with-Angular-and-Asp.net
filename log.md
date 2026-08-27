@@ -933,3 +933,4 @@
 - 2026-08-25 11:25:37 — perf: improve load time
 - 2026-08-26 06:50:06 — perf: improve load time
 - 2026-08-26 09:38:36 — docs: update documentation
+- 2026-08-27 17:23:50 — test: add unit tests
