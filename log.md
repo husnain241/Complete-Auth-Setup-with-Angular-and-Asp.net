@@ -937,3 +937,4 @@
 - 2026-08-27 19:25:38 — fix: resolve minor bugs
 - 2026-08-27 20:54:13 — feat: improve UI components
 - 2026-08-29 12:25:37 — style: format code
+- 2026-08-29 14:09:40 — docs: update documentation
