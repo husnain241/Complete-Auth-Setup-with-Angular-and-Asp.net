@@ -941,3 +941,4 @@
 - 2026-08-29 15:29:39 — perf: improve load time
 - 2026-08-30 14:16:21 — fix: resolve minor bugs
 - 2026-08-30 15:09:49 — fix: resolve minor bugs
+- 2026-08-31 12:55:45 — style: format code
