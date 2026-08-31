@@ -942,3 +942,4 @@
 - 2026-08-30 14:16:21 — fix: resolve minor bugs
 - 2026-08-30 15:09:49 — fix: resolve minor bugs
 - 2026-08-31 12:55:45 — style: format code
+- 2026-08-31 16:42:45 — refactor: clean up code structure
