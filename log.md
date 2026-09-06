@@ -958,3 +958,4 @@
 - 2026-09-05 12:22:16 — docs: update documentation
 - 2026-09-05 13:40:16 — feat: improve UI components
 - 2026-09-06 10:25:22 — refactor: clean up code structure
+- 2026-09-06 12:37:04 — test: add unit tests
