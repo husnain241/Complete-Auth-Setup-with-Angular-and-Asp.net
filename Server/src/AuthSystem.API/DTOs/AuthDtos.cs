@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 namespace AuthSystem.API.DTOs;
 
 /// <summary>
-/// Login request DTO.
+/// Login request DTO.  n
 /// </summary>
-public record LoginRequestDto(
+public record LoginRequestDto( 
     [Required]
     [EmailAddress]
     string Email,
